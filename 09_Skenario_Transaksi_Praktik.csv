@@ -1,0 +1,13 @@
+no,tahap,dokumen_erpnext,pihak_terkait,deskripsi_transaksi,detail_item,qty,satuan,target_gudang,catatan_praktik
+1,Pengadaan,Purchase Order,PT Kayu Rimba Perkasa,Pemesanan bahan baku kayu pinus tambahan,RAW-KAYU-01,20,Nos,Gudang Bahan Baku - RF,Lakukan Submit PO lalu buat Purchase Receipt
+2,Penerimaan Barang,Purchase Receipt,PT Kayu Rimba Perkasa,Penerimaan fisik kayu dari supplier,RAW-KAYU-01,20,Nos,Gudang Bahan Baku - RF,Stok bahan baku otomatis bertambah
+3,Faktur Pembelian,Purchase Invoice,PT Kayu Rimba Perkasa,Pencatatan tagihan utang supplier,RAW-KAYU-01,20,Nos,-,Catat faktur dan selesaikan Payment Entry
+4,Pesanan Penjualan,Sales Order,Toko Furnitur Sejahtera Abadi,Pesanan 10 unit Meja Belajar Minimalis RF-100,PROD-MEJA-01,10,Nos,Gudang Barang Jadi - RF,Harga jual Rp 475.000 / unit. Status: To Produce
+5,Perencanaan Produksi,Production Plan,Internal Manufaktur,Menghasilkan Work Order dari Sales Order,PROD-MEJA-01,10,Nos,-,Pilih Get Sales Order lalu buat Work Order
+6,Perintah Kerja,Work Order,Internal Manufaktur,Perintah produksi 10 unit meja belajar,PROD-MEJA-01,10,Nos,Gudang WIP Produksi - RF,Pastikan BOM terpilih BOM-PROD-MEJA-01
+7,Transfer Material,Stock Entry (Material Transfer for Manufacture),Gudang Bahan Baku -> WIP,Transfer bahan baku yang dibutuhkan untuk 10 meja,Komponen BOM (Kayu 10, Pipa 5, Baut 80, Cat 2.5L, Kaki 40, Amplas 10),-,Nos,Gudang WIP Produksi - RF,Klik Start pada Work Order
+8,Eksekusi Stasiun,Job Cards,Operator Stasiun Kerja,Menjalankan 4 stasiun: Cutting -> Welding -> Painting -> Assembly,Operasi Manufaktur,10,Nos,Stasiun Kerja Terkait,Klik Start & Complete pada masing-masing Job Card
+9,Penyelesaian Produksi,Stock Entry (Manufacture),Gudang WIP -> Barang Jadi,Konfirmasi barang jadi selesai dirakit dan QC lolos,PROD-MEJA-01,10,Nos,Gudang Barang Jadi - RF,Klik Finish pada Work Order. HPP terhitung otomatis
+10,Pengiriman Barang,Delivery Note,Toko Furnitur Sejahtera Abadi,Pengiriman 10 unit meja ke pembeli,PROD-MEJA-01,10,Nos,Gudang Barang Jadi - RF,Stok barang jadi berkurang 10 unit
+11,Faktur Penjualan,Sales Invoice,Toko Furnitur Sejahtera Abadi,Penagihan piutang senilai Rp 4.750.000,PROD-MEJA-01,10,Nos,-,Status: Unpaid -> Lanjutkan ke Payment Entry
+12,Penerimaan Pembayaran,Payment Entry,Toko Furnitur Sejahtera Abadi,Pelunasan tagihan melalui Bank/Kas,PROD-MEJA-01,-,-,-,Uang masuk ke akun Bank/Kas perusahaan

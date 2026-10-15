@@ -1,0 +1,5 @@
+warehouse_name,parent_warehouse,is_group,description
+Gudang Bahan Baku - RF,All Warehouses,0,Tempat penyimpanan material mentah seperti kayu dan besi
+Gudang WIP Produksi - RF,All Warehouses,0,Tempat transit barang dalam proses perakitan
+Gudang Barang Jadi - RF,All Warehouses,0,Tempat penyimpanan produk jadi siap jual dan kirim
+Gudang Scrap Rusak - RF,All Warehouses,0,Penyimpanan sisa potongan atau barang reject

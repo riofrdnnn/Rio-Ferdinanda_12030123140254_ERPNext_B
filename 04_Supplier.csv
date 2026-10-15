@@ -1,0 +1,5 @@
+supplier_name,supplier_group,supplier_type,country,tax_id,email,phone
+PT Kayu Rimba Perkasa,Raw Material,Company,Indonesia,01.234.567.8-011.000,sales@kayurimba.co.id,021-5551234
+CV Logam Baja Nusantara,Raw Material,Company,Indonesia,02.345.678.9-022.000,order@bajanusantara.id,021-8889900
+Toko Baut Citra Fastener,Hardware,Individual,Indonesia,03.456.789.0-033.000,citrabaut@gmail.com,081234567890
+UD Cahaya Cat Finishing,Hardware,Individual,Indonesia,04.567.890.1-044.000,cahayacat@yahoo.com,081398765432

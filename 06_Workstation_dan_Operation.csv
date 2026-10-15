@@ -1,0 +1,9 @@
+doctype,name,workstation_name,operation_name,hour_rate,description
+Workstation,WS-POTONG,Stasiun Kerja Pemotongan Kayu & Besi,,60000,Area mesin potong gerinda duduk dan table saw
+Workstation,WS-LAS,Stasiun Kerja Pengelasan & Rangka,,65000,Area pengelasan rangka besi dan perataan sudut
+Workstation,WS-CAT,Stasiun Kerja Finishing & Pengecatan,,55000,Bilik semprot spray gun cat anti karat dan oven pengering
+Workstation,WS-RAKIT,Stasiun Kerja Perakitan & Quality Control,,50000,Meja perakitan akhir kayu dan kaki besi serta pengecekan QC
+Operation,OP-CUTTING,,Pemotongan Bahan Baku (Cutting),,Proses memotong papan kayu dan memotong pipa besi sesuai ukuran desain
+Operation,OP-WELDING,,Pengelasan Rangka (Welding),,Proses menyambung potongan pipa besi menjadi rangka kokoh
+Operation,OP-PAINTING,,Pengecatan dan Finishing (Coating),,Proses pelapisan anti karat dan semprot cat hitam doff
+Operation,OP-ASSEMBLY,,Perakitan Akhir & QC (Assembly),,Pemasangan daun meja kayu ke rangka besi dengan baut dan uji stabilitas

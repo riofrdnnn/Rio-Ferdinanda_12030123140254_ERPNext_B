@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Laporan Hasil Praktikum ERPNext Manufaktur</title>
+<style>
+    body { font-family: 'Calibri', Arial, sans-serif; line-height: 1.6; color: #222; margin: 40px; }
+    h1 { color: #1a5276; text-align: center; border-bottom: 2px solid #1a5276; padding-bottom: 10px; }
+    h2 { color: #2e86c1; margin-top: 25px; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+    h3 { color: #2874a6; margin-top: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 20px; font-size: 14px; }
+    th { background-color: #2e86c1; color: white; border: 1px solid #ddd; padding: 10px; text-align: left; }
+    td { border: 1px solid #ddd; padding: 8px 10px; }
+    tr:nth-child(even) { background-color: #f9fbfd; }
+    .badge-success { background-color: #27ae60; color: white; padding: 3px 8px; border-radius: 4px; font-weight: bold; }
+    .highlight-box { background-color: #eaf2f8; border-left: 5px solid #2e86c1; padding: 15px; margin: 15px 0; }
+</style>
+</head>
+<body>
+
+<h1>LAPORAN IMPLEMENTASI & PENYELESAIAN PRAKTIKUM ERPNEXT</h1>
+<p style="text-align: center; font-style: italic;">Studi Kasus Alur Bisnis Industri Manufaktur Terintegrasi (End-to-End)</p>
+
+<div class="highlight-box">
+    <strong>IDENTITAS PERUSAHAAN:</strong><br>
+    • Nama Perusahaan: <strong>PT Terang Maju Manufaktur (PT TMM)</strong><br>
+    • Bidang Industri: Manufaktur Furniture (Produk Utama: Meja Kayu Minimalis)<br>
+    • Metode Persediaan: Perpetual Inventory System<br>
+    • Status Eksekusi: <strong>100% Tuntas & Terverifikasi</strong>
+</div>
+
+<h2>1. Ringkasan Eksekusi per Tahapan Bisnis</h2>
+
+<h3>Tahap 1: Pengadaan Bahan Baku (Procurement & Stock)</h3>
+<ul>
+    <li><strong>Purchase Order (PO):</strong> <code>PUR-ORD-2026-00001</code> kepada <em>CV Kayu Nusantara</em> untuk 100 Lembar Papan Mahoni (Rp 15.000.000) dan 20 Kaleng Cat (Rp 1.000.000). Total: <strong>Rp 16.000.000,00</strong>.</li>
+    <li><strong>Purchase Receipt (GRN):</strong> <code>MAT-PRE-2026-00001</code> masuk ke <em>Gudang Bahan Baku - TMM</em>.</li>
+    <li><strong>Purchase Invoice:</strong> <code>ACC-PINV-2026-00001</code> pengakuan utang usaha (Creditors).</li>
+</ul>
+
+<h3>Tahap 2: Resep Produksi (Bill of Materials - BOM)</h3>
+<ul>
+    <li><strong>BOM ID:</strong> <code>BOM-FG-001-001</code> untuk 1 Unit <strong>FG-001 (Meja Kayu Minimalis)</strong>.</li>
+    <li><strong>Komposisi Bahan:</strong> 2 Lembar RM-001 (@ Rp 150.000) + 1 Kaleng RM-002 (@ Rp 50.000).</li>
+    <li><strong>Estimasi HPP Bahan Baku:</strong> <strong>Rp 350.000,00 / unit</strong>.</li>
+</ul>
+
+<h3>Tahap 3: Siklus Produksi & Pergerakan Stok (Manufacturing)</h3>
+<ul>
+    <li><strong>Work Order:</strong> <code>MFG-WO-2026-00002</code> diterbitkan sebanyak 10 unit FG-001.</li>
+    <li><strong>Transfer to WIP:</strong> <code>MAT-STE-2026-00004</code> memindahkan 20 kayu dan 10 cat (Rp 3.500.000) ke <em>Gudang WIP - TMM</em>.</li>
+    <li><strong>Manufacture (Finish):</strong> <code>MAT-STE-2026-00005</code> menyerap bahan dan menerima 10 unit meja jadi ke <em>Gudang Barang Jadi - TMM</em>.</li>
+</ul>
+
+<h3>Tahap 4: Penjualan & Pengiriman Produk Jadi (Sales & Fulfillment)</h3>
+<ul>
+    <li><strong>Sales Order:</strong> <code>SAL-ORD-2026-00002</code> pelanggan <em>PT Mebel Indah</em> (5 unit @ Rp 750.000 = Rp 3.750.000).</li>
+    <li><strong>Delivery Note:</strong> <code>MAT-DN-2026-00002</code> mengirimkan 5 unit dari Gudang Barang Jadi (Pengakuan HPP: Rp 1.750.000).</li>
+    <li><strong>Sales Invoice:</strong> <code>ACC-SINV-2026-00002</code> penagihan piutang dagang (Rp 3.750.000).</li>
+</ul>
+
+<h3>Tahap 5: Pelunasan Kas & Biaya Operasional</h3>
+<ul>
+    <li><strong>Payment Entry:</strong> <code>ACC-PAY-2026-00002</code> penerimaan pelunasan piutang Rp 3.750.000 ke rekening <em>1112 - Bank BCA</em>.</li>
+    <li><strong>Journal Entry:</strong> <code>ACC-JV-2026-00001</code> pembayaran biaya listrik &amp; utilitas pabrik Rp 500.000 dari rekening Bank BCA.</li>
+</ul>
+
+<h2>2. Lembar Evaluasi & Pencocokan Kunci Jawaban (Assessment)</h2>
+<p>Berikut adalah tabel perbandingan antara <strong>Kunci Jawaban Resmi</strong> pada soal praktikum dengan <strong>Nilai Riil pada Sistem ERPNext</strong>:</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>No</th>
+            <th>Laporan &amp; Nama Akun / Parameter</th>
+            <th>Formula / Kuantitas</th>
+            <th>Kunci Jawaban (Rp)</th>
+            <th>Nilai Real ERPNext (Rp)</th>
+            <th>Status Validasi</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td><strong>Persediaan Bahan Baku (1141)</strong></td>
+            <td>Sisa Stock RM-001 &amp; RM-002</td>
+            <td>Rp 12.500.000,00</td>
+            <td>Rp 12.500.000,00</td>
+            <td><span class="badge-success">SESUAI 100% [V]</span></td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td><strong>Persediaan Barang Jadi (1144)</strong></td>
+            <td>Sisa Stock 5 Unit FG-001</td>
+            <td>Rp 1.750.000,00</td>
+            <td>Rp 1.750.000,00</td>
+            <td><span class="badge-success">SESUAI 100% [V]</span></td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td><strong>Total Pendapatan Penjualan (4110)</strong></td>
+            <td>5 Unit @ Rp 750.000</td>
+            <td>Rp 3.750.000,00</td>
+            <td>Rp 3.750.000,00</td>
+            <td><span class="badge-success">SESUAI 100% [V]</span></td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td><strong>Total Harga Pokok Penjualan (5110)</strong></td>
+            <td>5 Unit @ Rp 350.000</td>
+            <td>Rp 1.750.000,00</td>
+            <td>Rp 1.750.000,00</td>
+            <td><span class="badge-success">SESUAI 100% [V]</span></td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td><strong>Laba Kotor (Gross Profit)</strong></td>
+            <td>Pendapatan - HPP</td>
+            <td>Rp 2.000.000,00</td>
+            <td>Rp 2.000.000,00</td>
+            <td><span class="badge-success">SESUAI 100% [V]</span></td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td><strong>Beban Utilitas Pabrik (5310)</strong></td>
+            <td>Beban Operasional</td>
+            <td>Rp 500.000,00</td>
+            <td>Rp 500.000,00</td>
+            <td><span class="badge-success">SESUAI 100% [V]</span></td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td><strong>Laba Bersih Operasional (Net Profit)</strong></td>
+            <td>Laba Kotor - Beban</td>
+            <td>Rp 1.500.000,00</td>
+            <td>Rp 1.500.000,00</td>
+            <td><span class="badge-success">SESUAI 100% [V]</span></td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>3. Kesimpulan & Verifikasi Hasil Penelitian</h2>
+<p>Seluruh alur bisnis manufaktur mulai dari pengadaan bahan baku, manajemen BOM, perakitan Work Order, pengiriman penjualan, hingga pelunasan kas dan pengakuan biaya telah berhasil diimplementasikan pada ERPNext.</p>
+<p>Berdasarkan hasil audit sistem akuntansi dan modul persediaan, <strong>100% angka laporan keuangan dan buku besar persediaan cocok secara presisi (0% selisih)</strong> terhadap kunci jawaban studi kasus.</p>
+
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Skema Pelaksanaan Praktikum ERPNext</title>
+<style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; }
+    h1, h2, h3 { color: #2c3e50; }
+    ul { margin-bottom: 15px; }
+    li { margin-bottom: 5px; }
+</style>
+</head>
+<body>
+
+<h1>Skema Pelaksanaan Pengerjaan Studi Kasus ERPNext</h1>
+<p>Dokumen ini berisi skema pelaksanaan dan tutorial pengerjaan ERPNext berdasarkan studi kasus simulasi alur bisnis manufaktur untuk perusahaan <strong>PT Terang Maju Manufaktur (PT TMM)</strong>.</p>
+
+<h2>Tahap 0: Persiapan Master Data (Pra-syarat)</h2>
+<ul>
+    <li>Membuat Item Bahan Baku: <code>RM-001</code> (Papan Kayu Mahoni) dan <code>RM-002</code> (Cat &amp; Pelapis Kayu).</li>
+    <li>Membuat Item Barang Jadi: <code>FG-001</code> (Meja Kayu Minimalis).</li>
+    <li>Membuat Pemasok (Supplier): <code>CV Kayu Nusantara</code>.</li>
+    <li>Membuat Pelanggan (Customer): <code>PT Mebel Indah</code>.</li>
+    <li>Memastikan Gudang tersedia (Gudang Bahan Baku, WIP, dan Barang Jadi).</li>
+</ul>
+
+<h2>Tahap 1: Kasus 1 - Pengadaan Bahan Baku (Procurement &amp; Stock)</h2>
+<ul>
+    <li>Membuat dan men-submit <em>Purchase Order (PO)</em> kepada CV Kayu Nusantara.</li>
+    <li>Membuat <em>Purchase Receipt (GRN)</em> untuk penerimaan barang ke Gudang Bahan Baku.</li>
+    <li>Menerbitkan <em>Purchase Invoice</em> sebagai pengakuan utang.</li>
+</ul>
+
+<h2>Tahap 2: Kasus 2 - Penyusunan Resep Produksi (Bill of Materials - BOM)</h2>
+<ul>
+    <li>Membuat <em>BOM</em> untuk item <code>FG-001</code> yang membutuhkan 2 lembar <code>RM-001</code> dan 1 kaleng <code>RM-002</code>.</li>
+</ul>
+
+<h2>Tahap 3: Kasus 3 - Proses Produksi &amp; Pergerakan Stok (Manufacturing)</h2>
+<ul>
+    <li>Membuat <em>Work Order</em> untuk memproduksi 10 unit <code>FG-001</code>.</li>
+    <li>Melakukan <em>Stock Entry (Material Transfer for Manufacture)</em> untuk memindahkan bahan ke gudang WIP.</li>
+    <li>Melakukan <em>Stock Entry (Manufacture)</em> untuk mencatat hasil produksi menjadi barang jadi.</li>
+</ul>
+
+<h2>Tahap 4: Kasus 4 - Penjualan Produk Jadi (Sales &amp; Fulfillment)</h2>
+<ul>
+    <li>Membuat <em>Sales Order (SO)</em> dari PT Mebel Indah untuk 5 unit <code>FG-001</code>.</li>
+    <li>Membuat <em>Delivery Note (DN)</em> untuk mengirim barang ke pelanggan.</li>
+    <li>Menerbitkan <em>Sales Invoice</em> sebagai tagihan piutang.</li>
+</ul>
+
+<h2>Tahap 5: Kasus 5 - Pelunasan Kas &amp; Biaya Operasional Pabrik</h2>
+<ul>
+    <li>Membuat <em>Payment Entry</em> untuk menerima pembayaran piutang dari PT Mebel Indah ke Bank BCA.</li>
+    <li>Membuat <em>Payment Entry</em> atau <em>Journal Entry</em> untuk pembayaran beban listrik/utilitas pabrik.</li>
+</ul>
+
+<h2>Tahap 6: Evaluasi Laporan Keuangan &amp; Stok (Assessment)</h2>
+<ul>
+    <li>Melakukan pengecekan pada laporan Stock Ledger, Profit and Loss, dan Balance Sheet untuk mencocokkan dengan kunci jawaban pada soal.</li>
+</ul>
+
+</body>
+</html>

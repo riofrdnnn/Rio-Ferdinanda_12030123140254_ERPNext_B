@@ -1,0 +1,7 @@
+item_code,item_name,t_warehouse,qty,basic_rate,amount
+RAW-KAYU-01,Papan Kayu Solid Pinus 120x60x2cm,Gudang Bahan Baku - RF,50,85000,4250000
+RAW-PIPA-01,Pipa Besi Hollow 4x4 Tebal 1.6mm (Batang 6m),Gudang Bahan Baku - RF,30,110000,3300000
+RAW-BAUT-01,Baut & Mur Hex Galvanis M6x30,Gudang Bahan Baku - RF,500,1000,500000
+RAW-CAT-01,Cat Anti Karat Black Doff (Kaleng 1L),Gudang Bahan Baku - RF,20,45000,900000
+RAW-KAKI-01,Karet Pelindung Alas Kaki 4x4cm,Gudang Bahan Baku - RF,200,2500,500000
+RAW-AMPLAS-01,Kertas Amplas Kayu No 240,Gudang Bahan Baku - RF,50,4000,200000

@@ -1,0 +1,10 @@
+item_code,item_name,item_group,stock_uom,is_stock_item,include_item_in_manufacturing,valuation_rate,standard_rate,description
+RAW-KAYU-01,Papan Kayu Solid Pinus 120x60x2cm,Bahan Baku,Nos,1,1,85000,95000,Papan kayu pinus olahan untuk daun meja belajar
+RAW-PIPA-01,Pipa Besi Hollow 4x4 Tebal 1.6mm (Batang 6m),Bahan Baku,Nos,1,1,110000,125000,Bahan dasar rangka meja dan kaki kursi
+RAW-BAUT-01,Baut & Mur Hex Galvanis M6x30,Bahan Penolong,Nos,1,1,1000,1500,Baut perakit rangka besi dan kayu
+RAW-CAT-01,Cat Anti Karat Black Doff (Kaleng 1L),Bahan Penolong,Nos,1,1,45000,50000,Cat pelapis rangka besi anti korosi
+RAW-KAKI-01,Karet Pelindung Alas Kaki 4x4cm,Bahan Penolong,Nos,1,1,2500,3500,Karet penutup ujung pipa besi peredam lantai
+RAW-AMPLAS-01,Kertas Amplas Kayu No 240,Bahan Penolong,Nos,1,1,4000,5000,Kertas amplas untuk finishing kayu
+PROD-MEJA-01,Meja Belajar Minimalis RF-100,Produk Jadi,Nos,1,0,245000,475000,Meja belajar minimalis kayu solid dengan rangka besi hollow
+PROD-RAK-01,Rak Buku Sudut Industrial RF-200,Produk Jadi,Nos,1,0,180000,350000,Rak buku susun 3 bergaya industrial kombinasi kayu dan besi
+WIP-RANGKA-01,Sub-Assembly Rangka Besi Meja RF-100,Barang Dalam Proses,Nos,1,1,130000,150000,Rangka meja yang sudah dipotong dan dilas sebelum dicat

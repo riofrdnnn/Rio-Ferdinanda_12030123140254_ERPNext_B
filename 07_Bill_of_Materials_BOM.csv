@@ -1,0 +1,20 @@
+bom_name,parent_item,item_type,component_item_code,component_item_name,qty,uom,rate_estimate,operating_cost_estimate,operation,workstation,time_in_mins
+BOM-PROD-MEJA-01,PROD-MEJA-01,Item,RAW-KAYU-01,Papan Kayu Solid Pinus 120x60x2cm,1,Nos,85000,0,,,
+BOM-PROD-MEJA-01,PROD-MEJA-01,Item,RAW-PIPA-01,Pipa Besi Hollow 4x4 (Batang 6m),0.5,Nos,110000,0,,,
+BOM-PROD-MEJA-01,PROD-MEJA-01,Item,RAW-BAUT-01,Baut & Mur Hex Galvanis M6x30,8,Nos,1000,0,,,
+BOM-PROD-MEJA-01,PROD-MEJA-01,Item,RAW-CAT-01,Cat Anti Karat Black Doff (Kaleng 1L),0.25,Nos,45000,0,,,
+BOM-PROD-MEJA-01,PROD-MEJA-01,Item,RAW-KAKI-01,Karet Pelindung Alas Kaki 4x4cm,4,Nos,2500,0,,,
+BOM-PROD-MEJA-01,PROD-MEJA-01,Item,RAW-AMPLAS-01,Kertas Amplas Kayu No 240,1,Nos,4000,0,,,
+BOM-PROD-MEJA-01,PROD-MEJA-01,Operation,,,,,,15000,Pemotongan Bahan Baku (Cutting),Stasiun Kerja Pemotongan Kayu & Besi,15
+BOM-PROD-MEJA-01,PROD-MEJA-01,Operation,,,,,,21667,Pengelasan Rangka (Welding),Stasiun Kerja Pengelasan & Rangka,20
+BOM-PROD-MEJA-01,PROD-MEJA-01,Operation,,,,,,13750,Pengecatan dan Finishing (Coating),Stasiun Kerja Finishing & Pengecatan,15
+BOM-PROD-MEJA-01,PROD-MEJA-01,Operation,,,,,,16667,Perakitan Akhir & QC (Assembly),Stasiun Kerja Perakitan & Quality Control,20
+BOM-PROD-RAK-01,PROD-RAK-01,Item,RAW-KAYU-01,Papan Kayu Solid Pinus 120x60x2cm,0.75,Nos,85000,0,,,
+BOM-PROD-RAK-01,PROD-RAK-01,Item,RAW-PIPA-01,Pipa Besi Hollow 4x4 (Batang 6m),0.4,Nos,110000,0,,,
+BOM-PROD-RAK-01,PROD-RAK-01,Item,RAW-BAUT-01,Baut & Mur Hex Galvanis M6x30,12,Nos,1000,0,,,
+BOM-PROD-RAK-01,PROD-RAK-01,Item,RAW-CAT-01,Cat Anti Karat Black Doff (Kaleng 1L),0.2,Nos,45000,0,,,
+BOM-PROD-RAK-01,PROD-RAK-01,Item,RAW-KAKI-01,Karet Pelindung Alas Kaki 4x4cm,4,Nos,2500,0,,,
+BOM-PROD-RAK-01,PROD-RAK-01,Operation,,,,,,15000,Pemotongan Bahan Baku (Cutting),Stasiun Kerja Pemotongan Kayu & Besi,15
+BOM-PROD-RAK-01,PROD-RAK-01,Operation,,,,,,16250,Pengelasan Rangka (Welding),Stasiun Kerja Pengelasan & Rangka,15
+BOM-PROD-RAK-01,PROD-RAK-01,Operation,,,,,,11000,Pengecatan dan Finishing (Coating),Stasiun Kerja Finishing & Pengecatan,12
+BOM-PROD-RAK-01,PROD-RAK-01,Operation,,,,,,12500,Perakitan Akhir & QC (Assembly),Stasiun Kerja Perakitan & Quality Control,15
