@@ -1,0 +1,3082 @@
+$sourceHtml = "C:\Users\Windows 10\.gemini\antigravity\scratch\ERP_Rio Ferdinanda\Buku_Pembelajaran_Rio_Ferdinanda.html"
+$destDocx1 = "C:\Users\Windows 10\.gemini\antigravity\scratch\ERP_Rio Ferdinanda\BUKU_PEMBELAJARAN_ERPNEXT_RIO_FERDINANDA_12030123140254.docx"
+$destDocx2 = "C:\Users\Windows 10\Downloads\Buku Pembelajaran\BUKU_PEMBELAJARAN_ERPNEXT_RIO_FERDINANDA_12030123140254.docx"
+$destPdf1  = "C:\Users\Windows 10\.gemini\antigravity\scratch\ERP_Rio Ferdinanda\BUKU_PEMBELAJARAN_ERPNEXT_RIO_FERDINANDA_12030123140254.pdf"
+$destPdf2  = "C:\Users\Windows 10\Downloads\Buku Pembelajaran\BUKU_PEMBELAJARAN_ERPNEXT_RIO_FERDINANDA_12030123140254.pdf"
+
+Write-Host "Starting Word Application..."
+$word = New-Object -ComObject Word.Application
+$word.Visible = $false
+$word.DisplayAlerts = 0
+
+Write-Host "Opening HTML source: $sourceHtml"
+$doc = $word.Documents.Open($sourceHtml)
+
+Write-Host "Saving as DOCX to scratch folder..."
+$doc.SaveAs([ref]$destDocx1, [ref]16)
+
+Write-Host "Saving as DOCX to Downloads/Buku Pembelajaran..."
+$doc.SaveAs([ref]$destDocx2, [ref]16)
+
+Write-Host "Exporting to PDF..."
+try {
+    $doc.SaveAs([ref]$destPdf1, [ref]17)
+    $doc.SaveAs([ref]$destPdf2, [ref]17)
+    Write-Host "PDF exported successfully!"
+} catch {
+    Write-Host "PDF export warning: $_"
+}
+
+$doc.Close()
+$word.Quit()
+[System.Runtime.Interopservices.Marshal]::ReleaseComObject($doc) | Out-Null
+[System.Runtime.Interopservices.Marshal]::ReleaseComObject($word) | Out-Null
+[System.GC]::Collect()
+[System.GC]::WaitForPendingFinalizers()
+
+Write-Host "Conversion completed successfully!"
+Get-ChildItem $destDocx1, $destDocx2, $destPdf1, $destPdf2 -ErrorAction SilentlyContinue | Select-Object FullName, Length
+
+LAPORAN DOKUMENTASI DATASET ERPNEXT MANUFAKTUR
+Struktur Dataset 20 File CSV dan Panduan Impor Modul Manufaktur
+
+1. Informasi Mahasiswa & Lingkungan Sistem
+Nama Mahasiswa
+Rio Ferdinanda
+
+NIM / Student ID
+12030123140254
+
+Program Studi / Fakultas
+Akuntansi / Fakultas Ekonomika dan Bisnis, Universitas Diponegoro
+
+Lingkungan Deployment
+Windows 10, WSL 2 (Ubuntu), Docker Desktop (frappe_docker)
+
+Tanggal Penyusunan
+29 September 2026
+
+
+2. Ringkasan Eksekutif & Tujuan Praktikum
+Dokumen ini memuat dokumentasi menyeluruh terkait pembuatan dan penataan 20 file dataset berformat CSV yang dirancang khusus untuk memenuhi kebutuhan pengujian serta praktik operasional modul manufaktur pada sistem ERPNext. Seluruh dataset telah disesuaikan dengan alur bisnis industri manufaktur nyata, mencakup pengelolaan bahan baku, komponen setengah jadi, produk akhir, stasiun kerja, routing operasi, bill of materials (BOM), hingga transaksi siklus pembelian (procurement) dan penjualan (sales).
+Dataset ini disimpan dalam direktori khusus di lingkungan Ubuntu WSL 2 pada direktori ~/ERP_Rio Ferdinanda dan telah siap diintegrasikan ke dalam database ERPNext menggunakan fitur Data Import.
+📌 PETUNJUK INTEGRASISeluruh file dataset telah diformat secara presisi agar kompatibel dengan skema database Frappe/ERPNext v15+. Pastikan urutan impor mengikuti hierarki pilar master data sebelum memasukkan transaksi.
+
+
+3. Rincian 20 File Dataset CSV Manufaktur
+Tabel berikut menyajikan daftar lengkap 20 file dataset beserta deskripsi fungsi dan kategori modul terkait dalam sistem ERPNext:
+Nama File CSV
+DocType / Kategori
+Keterangan & Isi Data
+
+01_Item_Group.csv
+Master Item Group
+Pengelompokan barang (Raw Material, Sub Assembly, Finished Goods)
+
+02_Item_Attribute.csv
+Master Variant
+Atribut spesifikasi produk (Warna, Ukuran, Dimensi)
+
+03_Item.csv
+Item Master
+Katalog lengkap bahan mentah (Plat Baja, Baut), komponen, dan produk akhir (Kursi Besi)
+
+04_Item_Price.csv
+Price List Rate
+Daftar harga standar jual dan beli untuk setiap item
+
+05_Warehouse.csv
+Master Gudang
+Struktur lokasi penyimpanan (Gudang Bahan Baku, Gudang Produksi, Gudang Barang Jadi)
+
+06_Supplier_Group.csv
+Supplier Group
+Pengelompokan mitra pemasok berdasarkan kategori material
+
+07_Supplier.csv
+Master Supplier
+Data identitas vendor/pemasok bahan baku (PT Baja Logam Nusantara, dll.)
+
+08_Customer_Group.csv
+Customer Group
+Kategori segmen pelanggan (Commercial, Individual)
+
+09_Customer.csv
+Master Customer
+Data entitas pembeli/pelanggan (PT Mitra Industri Utama, CV Mebel Sejahtera)
+
+10_Work_Center.csv
+Work Center
+Stasiun kerja pabrik (Pemotongan, Pengelasan, Perakitan) beserta tarif per jam
+
+11_Operation.csv
+Master Operasi
+Jenis pekerjaan manufaktur yang dilakukan pada stasiun kerja
+
+12_Routing.csv
+Routing Manufaktur
+Urutan langkah operasional dan estimasi durasi proses produksi
+
+13_BOM.csv
+Bill of Materials
+Resep dan formula komposisi material untuk pembuatan 1 unit produk jadi
+
+14_Work_Order.csv
+Work Order
+Perintah kerja produksi untuk merencanakan dan memulai proses manufaktur
+
+15_Job_Card.csv
+Job Card
+Kartu kerja lapangan untuk mencatat pelaksanaan per operasi produksi
+
+16_Stock_Entry.csv
+Stock Entry
+Pencatatan penerimaan, pemindahan, dan penyesuaian stok material
+
+17_Purchase_Order.csv
+Purchase Order
+Dokumen pesanan pembelian bahan baku kepada supplier
+
+18_Purchase_Receipt.csv
+Purchase Receipt
+Bukti penerimaan fisik bahan baku di gudang
+
+19_Sales_Order.csv
+Sales Order
+Dokumen pesanan penjualan produk jadi dari customer
+
+20_Sales_Invoice.csv
+Sales Invoice
+Faktur tagihan penjualan atas produk jadi yang ditransaksikan
+
+
+4. Urutan Prosedur Impor Data (Data Import Sequence)
+Agar tidak terjadi error relasi referensi kunci (foreign key error) di ERPNext, proses impor data WAJIB dilakukan secara bertahap sesuai urutan berikut:
+• Tahap 1: Master Pengelompokan & Atribut: Impor file 01_Item_Group.csv, 02_Item_Attribute.csv, 05_Warehouse.csv, 06_Supplier_Group.csv, dan 08_Customer_Group.csv.
+• Tahap 2: Master Entitas & Item: Impor file 03_Item.csv, 04_Item_Price.csv, 07_Supplier.csv, dan 09_Customer.csv.
+• Tahap 3: Master Manufaktur & BOM: Impor file 10_Work_Center.csv, 11_Operation.csv, 12_Routing.csv, dan 13_BOM.csv.
+• Tahap 4: Transaksi Operasional: Impor file 14_Work_Order.csv hingga 20_Sales_Invoice.csv untuk mensimulasikan alur kerja end-to-end.
+
+5. Prosedur Konversi Dokumentasi ke DOCX via Terminal
+Untuk melakukan konversi mandiri dari format Markdown (.md) ke Word (.docx) di lingkungan Ubuntu WSL 2, dapat menggunakan perkakas Pandoc atau skrip Python terintegrasi:
+Perintah Pandoc: cd ~/"ERP_Rio Ferdinanda"pandoc Dokumentasi_ERP_Rio_Ferdinanda.md -o Dokumentasi_ERP_Rio_Ferdinanda.docx
+import pypdf
+
+def analyze_pdf(pdf_path, out_txt):
+    reader = pypdf.PdfReader(pdf_path)
+    print(f"=== ANALYZING: {pdf_path} ===")
+    print(f"Total Pages: {len(reader.pages)}")
+    
+    text_content = []
+    for idx, page in enumerate(reader.pages):
+        txt = page.extract_text() or ""
+        header = f"\n--- [PAGE {idx+1}] ---\n"
+        text_content.append(header + txt)
+        if idx < 5:
+            print(f"Page {idx+1} preview: {txt[:200]}...")
+            
+    with open(out_txt, "w", encoding="utf-8") as f:
+        f.write("\n".join(text_content))
+    print(f"Saved extracted text to {out_txt}")
+
+def run():
+    analyze_pdf("/home/frappe/buku1.pdf", "/home/frappe/buku1_text.txt")
+    analyze_pdf("/home/frappe/buku2.pdf", "/home/frappe/buku2_text.txt")
+
+if __name__ == "__main__":
+    run()
+
+import frappe
+
+def run():
+    bom = frappe.get_doc("BOM", "BOM-PROD-MEJA-01-001")
+    print("BOM with_operations:", bom.with_operations)
+    print("BOM operations count:", len(bom.operations))
+    for op in bom.operations:
+        print(f"  - op: {op.operation}, ws: {op.workstation}, time: {op.time_in_mins}, hour_rate: {op.hour_rate}")
+        
+    company = frappe.get_doc("Company", "PT Rio Ferdinanda Manufaktur")
+    print("Current default_operating_cost_account:", company.default_operating_cost_account)
+    company.default_operating_cost_account = "Expenses Included In Valuation - RFM"
+    company.expenses_added_to_stock_account = "Expenses Included In Valuation - RFM"
+    company.save(ignore_permissions=True)
+    frappe.db.commit()
+    print("Updated default_operating_cost_account:", company.default_operating_cost_account)
+
+# FLOWCHART & STANDAR OPERASIONAL SISTEM PERSEDIAAN ERPNEXT
+**Perusahaan Simulasi:** PT Rio Ferdinanda Manufaktur  
+**Sistem:** ERPNext (Modul Stock, Manufacturing, Buying, Selling, & Accounting)  
+**Dokumen Terkait:** `Flowchart_Sistem_Persediaan_ERPNext.docx`
+
+---
+
+## 1. Gambaran Umum Kebijakan Persediaan
+Sistem persediaan di PT Rio Ferdinanda Manufaktur menerapkan metode **Perpetual Inventory System** dengan valuasi **Moving Average / FIFO**. 
+Persediaan diklasifikasikan ke dalam 3 zona gudang operasional:
+1. **Gudang Bahan Baku - RF - RFM:** Zona penyimpanan material mentah (*Raw Materials & Consumables*).
+2. **Gudang WIP Produksi - RF - RFM:** Zona perakitan lantai pabrik (*Work-in-Progress*).
+3. **Gudang Barang Jadi - RF - RFM:** Zona produk akhir yang telah lolos QC dan siap dikirim (*Finished Goods*).
+
+---
+
+## 2. Diagram Alir Persediaan (Visual Flowchart)
+Diagram visual beresolusi tinggi tersedia dan telah di-embed ke dalam dokumen Word:
+- Berkas Gambar: `flowchart_persediaan_erpnext.png`
+- Berkas Word: `Flowchart_Sistem_Persediaan_ERPNext.docx`
+
+```mermaid
+flowchart TD
+    subgraph PENGADAAN["1. Pengadaan (Buying)"]
+        MR[Material Request] --> PO[Purchase Order]
+        PO --> PI[Purchase Invoice]
+        PI --> PE1[Payment Entry - Kas Keluar]
+    end
+
+    subgraph GUDANG_BAHAN["2. Gudang Bahan Baku (Stores)"]
+        OS[Opening Stock / Saldo Awal] --> STOK_BAHAN[(Gudang Bahan Baku)]
+        PO -.->|Barang Datang| PR[Purchase Receipt]
+        PR --> STOK_BAHAN
+        STOK_BAHAN --> TR[Material Transfer for Manufacture]
+    end
+
+    subgraph PRODUKSI["3. Lantai Produksi (WIP)"]
+        BOM[Bill of Materials] --> WO[Work Order]
+        TR -->|Alokasi Bahan| WIP[(Gudang WIP Produksi)]
+        WIP --> JC[Eksekusi 4 Job Cards:\nCutting -> Welding -> Painting -> Assembly]
+        JC --> MFG[Stock Entry: Manufacture]
+    end
+
+    subgraph GUDANG_JADI["4. Gudang Barang Jadi & Sales"]
+        SO[Sales Order Pelanggan] -.->|MTO Trigger| WO
+        MFG -->|Produk Jadi + HPP| STOK_JADI[(Gudang Barang Jadi)]
+        STOK_JADI --> DN[Delivery Note - Surat Jalan]
+        DN --> SI[Sales Invoice]
+        SI --> PE2[Payment Entry - Kas Masuk]
+    end
+
+    classDef inbound fill:#dcfce7,stroke:#16a34a,stroke-width:2px;
+    classDef transfer fill:#ffedd5,stroke:#ea580c,stroke-width:2px;
+    classDef mfg fill:#f3e8ff,stroke:#9333ea,stroke-width:2px;
+    classDef outbound fill:#ffe4e6,stroke:#e11d48,stroke-width:2px;
+    
+    class PR,OS,STOK_BAHAN inbound;
+    class TR,WIP transfer;
+    class WO,JC,MFG mfg;
+    class DN,STOK_JADI outbound;
+```
+
+---
+
+## 3. Matriks Dokumen & Aturan Mutasi Persediaan di ERPNext
+
+| Dokumen ERPNext | Tipe Transaksi | Gudang Asal | Gudang Tujuan | Efek Stok Fisik | Dampak Jurnal Finansial (GL Entry) |
+|---|---|---|---|---|---|
+| **Stock Entry (Material Receipt)** | Saldo Awal (Inbound) | - | Gudang Bahan Baku | Bertambah (+) | Debit Persediaan Bahan, Kredit Akun Penyeimbang Saldo Awal |
+| **Purchase Receipt** | Penerimaan PO (Inbound) | - | Gudang Bahan Baku | Bertambah (+) | Debit Persediaan Bahan, Kredit Stock Received But Not Billed |
+| **Stock Entry (Material Transfer)** | Alokasi Pabrik (Transfer) | Gudang Bahan Baku | Gudang WIP Produksi | Netral (±0) | Debit Persediaan WIP, Kredit Persediaan Bahan Baku |
+| **Stock Entry (Manufacture)** | Selesai Produksi | Gudang WIP Produksi | Gudang Barang Jadi | WIP (-)<br>Produk Jadi (+) | Debit Persediaan Barang Jadi, Kredit Persediaan WIP + Beban Operasi |
+| **Delivery Note** | Pengiriman (Outbound) | Gudang Barang Jadi | - | Berkurang (-) | Debit Beban Pokok Penjualan (COGS), Kredit Persediaan Barang Jadi |
+| **Stock Reconciliation** | Stock Opname (Audit) | Bebas / Tiap Gudang | - | Penyesuaian Fisik | Debit/Kredit Akun Selisih Persediaan (Stock Adjustment) |
+
+---
+
+## 4. SOP Pengendalian Stok
+1. **Prinsip No Transfer, No Manufacture:** Pembuatan barang jadi pada *Stock Entry (Manufacture)* hanya dapat disubmit jika bahan mentah telah tercatat berada di `Gudang WIP Produksi`.
+2. **Kalkulasi HPP Otomatis:** ERPNext secara otomatis mengakumulasi biaya bahan baku yang terkonsumsi ditambah tarif jam kerja stasiun kerja (Workstations) untuk menentukan harga pokok unit barang jadi.
+3. **Pengurangan Stok di Surat Jalan:** Stok berkurang bukan saat Sales Order atau Invoice dibuat, melainkan saat **Delivery Note** disubmit.
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Laporan Hasil Praktikum ERPNext Manufaktur</title>
+<style>
+    body { font-family: 'Calibri', Arial, sans-serif; line-height: 1.6; color: #222; margin: 40px; }
+    h1 { color: #1a5276; text-align: center; border-bottom: 2px solid #1a5276; padding-bottom: 10px; }
+    h2 { color: #2e86c1; margin-top: 25px; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+    h3 { color: #2874a6; margin-top: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 20px; font-size: 14px; }
+    th { background-color: #2e86c1; color: white; border: 1px solid #ddd; padding: 10px; text-align: left; }
+    td { border: 1px solid #ddd; padding: 8px 10px; }
+    tr:nth-child(even) { background-color: #f9fbfd; }
+    .badge-success { background-color: #27ae60; color: white; padding: 3px 8px; border-radius: 4px; font-weight: bold; }
+    .highlight-box { background-color: #eaf2f8; border-left: 5px solid #2e86c1; padding: 15px; margin: 15px 0; }
+</style>
+</head>
+<body>
+
+<h1>LAPORAN IMPLEMENTASI & PENYELESAIAN PRAKTIKUM ERPNEXT</h1>
+<p style="text-align: center; font-style: italic;">Studi Kasus Alur Bisnis Industri Manufaktur Terintegrasi (End-to-End)</p>
+
+<div class="highlight-box">
+    <strong>IDENTITAS PERUSAHAAN:</strong><br>
+    • Nama Perusahaan: <strong>PT Terang Maju Manufaktur (PT TMM)</strong><br>
+    • Bidang Industri: Manufaktur Furniture (Produk Utama: Meja Kayu Minimalis)<br>
+    • Metode Persediaan: Perpetual Inventory System<br>
+    • Status Eksekusi: <strong>100% Tuntas & Terverifikasi</strong>
+</div>
+
+<h2>1. Ringkasan Eksekusi per Tahapan Bisnis</h2>
+
+<h3>Tahap 1: Pengadaan Bahan Baku (Procurement & Stock)</h3>
+<ul>
+    <li><strong>Purchase Order (PO):</strong> <code>PUR-ORD-2026-00001</code> kepada <em>CV Kayu Nusantara</em> untuk 100 Lembar Papan Mahoni (Rp 15.000.000) dan 20 Kaleng Cat (Rp 1.000.000). Total: <strong>Rp 16.000.000,00</strong>.</li>
+    <li><strong>Purchase Receipt (GRN):</strong> <code>MAT-PRE-2026-00001</code> masuk ke <em>Gudang Bahan Baku - TMM</em>.</li>
+    <li><strong>Purchase Invoice:</strong> <code>ACC-PINV-2026-00001</code> pengakuan utang usaha (Creditors).</li>
+</ul>
+
+<h3>Tahap 2: Resep Produksi (Bill of Materials - BOM)</h3>
+<ul>
+    <li><strong>BOM ID:</strong> <code>BOM-FG-001-001</code> untuk 1 Unit <strong>FG-001 (Meja Kayu Minimalis)</strong>.</li>
+    <li><strong>Komposisi Bahan:</strong> 2 Lembar RM-001 (@ Rp 150.000) + 1 Kaleng RM-002 (@ Rp 50.000).</li>
+    <li><strong>Estimasi HPP Bahan Baku:</strong> <strong>Rp 350.000,00 / unit</strong>.</li>
+</ul>
+
+<h3>Tahap 3: Siklus Produksi & Pergerakan Stok (Manufacturing)</h3>
+<ul>
+    <li><strong>Work Order:</strong> <code>MFG-WO-2026-00002</code> diterbitkan sebanyak 10 unit FG-001.</li>
+    <li><strong>Transfer to WIP:</strong> <code>MAT-STE-2026-00004</code> memindahkan 20 kayu dan 10 cat (Rp 3.500.000) ke <em>Gudang WIP - TMM</em>.</li>
+    <li><strong>Manufacture (Finish):</strong> <code>MAT-STE-2026-00005</code> menyerap bahan dan menerima 10 unit meja jadi ke <em>Gudang Barang Jadi - TMM</em>.</li>
+</ul>
+
+<h3>Tahap 4: Penjualan & Pengiriman Produk Jadi (Sales & Fulfillment)</h3>
+<ul>
+    <li><strong>Sales Order:</strong> <code>SAL-ORD-2026-00002</code> pelanggan <em>PT Mebel Indah</em> (5 unit @ Rp 750.000 = Rp 3.750.000).</li>
+    <li><strong>Delivery Note:</strong> <code>MAT-DN-2026-00002</code> mengirimkan 5 unit dari Gudang Barang Jadi (Pengakuan HPP: Rp 1.750.000).</li>
+    <li><strong>Sales Invoice:</strong> <code>ACC-SINV-2026-00002</code> penagihan piutang dagang (Rp 3.750.000).</li>
+</ul>
+
+<h3>Tahap 5: Pelunasan Kas & Biaya Operasional</h3>
+<ul>
+    <li><strong>Payment Entry:</strong> <code>ACC-PAY-2026-00002</code> penerimaan pelunasan piutang Rp 3.750.000 ke rekening <em>1112 - Bank BCA</em>.</li>
+    <li><strong>Journal Entry:</strong> <code>ACC-JV-2026-00001</code> pembayaran biaya listrik &amp; utilitas pabrik Rp 500.000 dari rekening Bank BCA.</li>
+</ul>
+
+<h2>2. Lembar Evaluasi & Pencocokan Kunci Jawaban (Assessment)</h2>
+<p>Berikut adalah tabel perbandingan antara <strong>Kunci Jawaban Resmi</strong> pada soal praktikum dengan <strong>Nilai Riil pada Sistem ERPNext</strong>:</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>No</th>
+            <th>Laporan &amp; Nama Akun / Parameter</th>
+            <th>Formula / Kuantitas</th>
+            <th>Kunci Jawaban (Rp)</th>
+            <th>Nilai Real ERPNext (Rp)</th>
+            <th>Status Validasi</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td><strong>Persediaan Bahan Baku (1141)</strong></td>
+            <td>Sisa Stock RM-001 &amp; RM-002</td>
+            <td>Rp 12.500.000,00</td>
+            <td>Rp 12.500.000,00</td>
+            <td><span class="badge-success">SESUAI 100% [V]</span></td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td><strong>Persediaan Barang Jadi (1144)</strong></td>
+            <td>Sisa Stock 5 Unit FG-001</td>
+            <td>Rp 1.750.000,00</td>
+            <td>Rp 1.750.000,00</td>
+            <td><span class="badge-success">SESUAI 100% [V]</span></td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td><strong>Total Pendapatan Penjualan (4110)</strong></td>
+            <td>5 Unit @ Rp 750.000</td>
+            <td>Rp 3.750.000,00</td>
+            <td>Rp 3.750.000,00</td>
+            <td><span class="badge-success">SESUAI 100% [V]</span></td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td><strong>Total Harga Pokok Penjualan (5110)</strong></td>
+            <td>5 Unit @ Rp 350.000</td>
+            <td>Rp 1.750.000,00</td>
+            <td>Rp 1.750.000,00</td>
+            <td><span class="badge-success">SESUAI 100% [V]</span></td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td><strong>Laba Kotor (Gross Profit)</strong></td>
+            <td>Pendapatan - HPP</td>
+            <td>Rp 2.000.000,00</td>
+            <td>Rp 2.000.000,00</td>
+            <td><span class="badge-success">SESUAI 100% [V]</span></td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td><strong>Beban Utilitas Pabrik (5310)</strong></td>
+            <td>Beban Operasional</td>
+            <td>Rp 500.000,00</td>
+            <td>Rp 500.000,00</td>
+            <td><span class="badge-success">SESUAI 100% [V]</span></td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td><strong>Laba Bersih Operasional (Net Profit)</strong></td>
+            <td>Laba Kotor - Beban</td>
+            <td>Rp 1.500.000,00</td>
+            <td>Rp 1.500.000,00</td>
+            <td><span class="badge-success">SESUAI 100% [V]</span></td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>3. Kesimpulan & Verifikasi Hasil Penelitian</h2>
+<p>Seluruh alur bisnis manufaktur mulai dari pengadaan bahan baku, manajemen BOM, perakitan Work Order, pengiriman penjualan, hingga pelunasan kas dan pengakuan biaya telah berhasil diimplementasikan pada ERPNext.</p>
+<p>Berdasarkan hasil audit sistem akuntansi dan modul persediaan, <strong>100% angka laporan keuangan dan buku besar persediaan cocok secara presisi (0% selisih)</strong> terhadap kunci jawaban studi kasus.</p>
+
+</body>
+</html>
+
+import frappe
+
+def run():
+    accs = frappe.db.sql("""
+        select name, account_type, root_type, is_group 
+        from `tabAccount` 
+        where company = 'PT Rio Ferdinanda Manufaktur'
+        order by root_type, name
+    """, as_dict=True)
+    for a in accs:
+        print(f"[{a.root_type}] {a.name} (type: {a.account_type}, is_group: {a.is_group})")
+
+# PANDUAN LENGKAP PRAKTIK ERPNEXT: MODUL MANUFAKTUR
+**Perusahaan Simulasi:** PT Rio Ferdinanda Manufaktur (Industri Furnitur Metal & Kayu)  
+**Tujuan Praktik:** Memahami siklus menyeluruh proses manufaktur (Make-to-Order / Make-to-Stock) pada ERPNext, mulai dari pengadaan bahan baku, manajemen gudang, pembuatan BOM (Bill of Materials) & Routing, eksekusi Work Order & Job Cards, hingga penjualan produk jadi.
+
+---
+
+## 1. Struktur Folder Dataset `ERP_Rio Ferdinanda`
+
+Semua file dataset berformat CSV siap impor dan panduan ini tersimpan di:
+`C:\Users\Windows 10\.gemini\antigravity\scratch\ERP_Rio Ferdinanda\`
+
+| No | File | Deskripsi & Doctype ERPNext |
+|---|---|---|
+| 1 | `01_Item_Group.csv` | Master Kategori Barang (*Item Group*) |
+| 2 | `02_Warehouse.csv` | Master Gudang Penyimpanan (*Warehouse*) |
+| 3 | `03_Item.csv` | Master Barang Bahan Baku, Penolong, WIP, dan Produk Jadi (*Item*) |
+| 4 | `04_Supplier.csv` | Master Pemasok Bahan Baku (*Supplier*) |
+| 5 | `05_Customer.csv` | Master Pelanggan Produk Jadi (*Customer*) |
+| 6 | `06_Workstation_dan_Operation.csv` | Master Stasiun Kerja (*Workstation*) & Jenis Pekerjaan (*Operation*) |
+| 7 | `07_Bill_of_Materials_BOM.csv` | Struktur Komposisi Produk & Waktu Operasi (*BOM*) |
+| 8 | `08_Opening_Stock_Stock_Entry.csv` | Saldo Awal Persediaan Gudang (*Stock Entry - Material Receipt*) |
+| 9 | `09_Skenario_Transaksi_Praktik.csv` | Rangkaian Alur Transaksi Simulasi Praktik |
+
+---
+
+## 2. Profil Perusahaan Simulasi
+- **Nama Perusahaan:** PT Rio Ferdinanda Manufaktur (atau disesuaikan dengan setting ERPNext Anda)
+- **Bidang Usaha:** Manufaktur Furnitur Industrial (Kombinasi Kayu Solid & Rangka Besi Hollow)
+- **Produk Unggulan:**
+  1. `PROD-MEJA-01`: Meja Belajar Minimalis RF-100 (Harga Jual Standar: Rp 475.000)
+  2. `PROD-RAK-01`: Rak Buku Sudut Industrial RF-200 (Harga Jual Standar: Rp 350.000)
+
+---
+
+## 3. Langkah-Langkah Praktik ERPNext (Step-by-Step)
+
+### TAHAP 1: Setup Master Data
+1. **Item Group**:
+   - Menu: **Stock > Item Group**
+   - Buat 4 grup: `Bahan Baku`, `Bahan Penolong`, `Barang Dalam Proses`, `Produk Jadi` (di bawah `All Item Groups`).
+2. **Warehouse (Gudang)**:
+   - Menu: **Stock > Warehouse**
+   - Buat 3 gudang utama:
+     - `Gudang Bahan Baku - RF` (Tipe: Stores)
+     - `Gudang WIP Produksi - RF` (Tipe: Work In Progress)
+     - `Gudang Barang Jadi - RF` (Tipe: Finished Goods)
+3. **Item**:
+   - Menu: **Stock > Item**
+   - Masukkan seluruh item dari `03_Item.csv`.
+   - *Penting:* Untuk bahan baku, pastikan centang `Is Stock Item`. Untuk produk jadi, pastikan centang `Allow Production Order / Include in Manufacturing`.
+4. **Supplier & Customer**:
+   - Menu: **Buying > Supplier** & **Selling > Customer**
+   - Masukkan mitra dari `04_Supplier.csv` dan `05_Customer.csv`.
+
+---
+
+### TAHAP 2: Setup Manufaktur (Operations, Workstations & BOM)
+1. **Workstations**:
+   - Menu: **Manufacturing > Workstation**
+   - Buat 4 stasiun kerja: `WS-POTONG`, `WS-LAS`, `WS-CAT`, `WS-RAKIT`. Masukkan tarif per jam (Hour Rate).
+2. **Operations**:
+   - Menu: **Manufacturing > Operation**
+   - Buat 4 operasi: `Pemotongan Bahan Baku`, `Pengelasan Rangka`, `Pengecatan dan Finishing`, `Perakitan Akhir & QC`.
+3. **Bill of Materials (BOM)**:
+   - Menu: **Manufacturing > Bill of Materials**
+   - Buat BOM baru untuk `PROD-MEJA-01`:
+     - **Item Quantity:** 1 Nos
+     - **With Operations:** Centang (Aktifkan Routing)
+     - **Items Table:** Masukkan bahan baku:
+       - `RAW-KAYU-01`: 1 Nos
+       - `RAW-PIPA-01`: 0.5 Batang
+       - `RAW-BAUT-01`: 8 Nos
+       - `RAW-CAT-01`: 0.25 Kaleng
+       - `RAW-KAKI-01`: 4 Nos
+       - `RAW-AMPLAS-01`: 1 Lembar
+     - **Operations Table:**
+       - Pemotongan (WS-POTONG, 15 menit)
+       - Pengelasan (WS-LAS, 20 menit)
+       - Pengecatan (WS-CAT, 15 menit)
+       - Perakitan (WS-RAKIT, 20 menit)
+     - Klik **Save** dan **Submit**.
+
+---
+
+### TAHAP 3: Input Saldo Awal Persediaan
+- Menu: **Stock > Stock Entry**
+- Type: **Material Receipt**
+- Target Warehouse: `Gudang Bahan Baku - RF`
+- Masukkan item dan kuantitas sesuai `08_Opening_Stock_Stock_Entry.csv`.
+- Klik **Submit**. Cek laporan **Stock Ledger** atau **Stock Balance** untuk memastikan stok bertambah.
+
+---
+
+### TAHAP 4: Siklus Produksi (Work Order & Job Cards)
+1. **Sales Order (Pesanan Masuk)**:
+   - Menu: **Selling > Sales Order**
+   - Customer: `Toko Furnitur Sejahtera Abadi`
+   - Item: `PROD-MEJA-01`, Qty: 10 Nos @ Rp 475.000.
+   - Klik **Save** dan **Submit**.
+2. **Work Order (SPK Produksi)**:
+   - Dari Sales Order yang telah di-submit, klik **Create > Work Order** (atau melalui **Manufacturing > Work Order**).
+   - Quantity to Manufacture: 10
+   - Source Warehouse: `Gudang Bahan Baku - RF`
+   - WIP Warehouse: `Gudang WIP Produksi - RF`
+   - FG Warehouse: `Gudang Barang Jadi - RF`
+   - Klik **Save** dan **Submit**.
+3. **Transfer Bahan Baku ke Lantai Pabrik**:
+   - Di dalam Work Order, klik **Start > Transfer Material for Manufacture**.
+   - ERPNext akan membuat **Stock Entry** yang memindahkan bahan dari `Gudang Bahan Baku - RF` ke `Gudang WIP Produksi - RF`.
+   - Periksa ketersediaan dan klik **Submit**.
+4. **Eksekusi Job Card (Operasi di Setiap Stasiun Kerja)**:
+   - Buka menu **Manufacturing > Job Card**.
+   - Terdapat 4 Job Card untuk pesanan 10 meja ini.
+   - Buka tiap Job Card secara berurutan, klik **Start Job**, isi waktu kerja, lalu klik **Complete Job**.
+5. **Penyelesaian Barang Jadi (Manufacture Stock Entry)**:
+   - Kembali ke Work Order, klik **Finish > Manufacture**.
+   - Sistem akan mencatat pemakaian bahan baku dari WIP dan menambahkan 10 unit `PROD-MEJA-01` ke `Gudang Barang Jadi - RF`.
+   - ERPNext akan menghitung total HPP (Harga Pokok Produksi) termasuk biaya bahan + biaya operasional stasiun kerja secara otomatis.
+   - Klik **Submit**. Status Work Order berubah menjadi **Completed**.
+
+---
+
+### TAHAP 5: Pengiriman & Penjualan (Delivery & Invoicing)
+1. **Delivery Note (Surat Jalan)**:
+   - Buka Sales Order sebelumnya, klik **Create > Delivery**.
+   - Set Warehouse: `Gudang Barang Jadi - RF`.
+   - Submit Delivery Note (Stok barang jadi berkurang 10 unit).
+2. **Sales Invoice (Faktur Penjualan)**:
+   - Dari Delivery Note, klik **Create > Invoice**.
+   - Total tagihan: Rp 4.750.000. Submit invoice.
+3. **Payment Entry (Penerimaan Uang)**:
+   - Klik **Make > Payment**, terima pembayaran ke akun Kas/Bank.
+
+---
+
+### TAHAP 6: Analisis Laporan Manufaktur
+Buka dan pelajari laporan berikut di ERPNext:
+- **Manufacturing > Reports > Production Analytics**
+- **Manufacturing > Reports > BOM Cost Tool**
+- **Stock > Reports > Stock Balance** (Memantau mutasi stok di ketiga gudang)
+- **Accounts > Reports > Profit and Loss Statement** (Melihat Margin Keuntungan dari penjualan produk manufaktur)
+
+# Dataset Praktik ERPNext - Manufaktur
+**Folder:** `ERP_Rio Ferdinanda`  
+**Tema:** Industri Manufaktur Furnitur & Metalworking (PT Rio Ferdinanda Manufaktur)
+
+Folder ini berisi paket lengkap dataset sederhana dan aplikatif untuk keperluan praktikum atau simulasi implementasi ERPNext pada industri manufaktur.
+
+## Daftar Berkas:
+1. `01_Item_Group.csv`: Master kategori item (Bahan Baku, Penolong, WIP, Produk Jadi).
+2. `02_Warehouse.csv`: Master gudang (Bahan Baku, WIP, Produk Jadi, Scrap).
+3. `03_Item.csv`: Master data item dengan atribut harga beli & jual standar.
+4. `04_Supplier.csv`: Master data vendor pemasok bahan baku.
+5. `05_Customer.csv`: Master data pelanggan/toko pembeli produk.
+6. `06_Workstation_dan_Operation.csv`: Master stasiun kerja & routing operasi produksi beserta tarif per jam.
+7. `07_Bill_of_Materials_BOM.csv`: Formula BOM dan routing operasi untuk produk jadi.
+8. `08_Opening_Stock_Stock_Entry.csv`: Data saldo awal persediaan untuk modul Stock Entry.
+9. `09_Skenario_Transaksi_Praktik.csv`: 12 tahapan simulasi transaksi end-to-end.
+10. `Panduan_Praktik_ERPNext_Manufaktur.md`: Panduan langkah demi langkah (tutorial lab) dari input master hingga pelaporan.
+
+## Cara Menggunakan:
+- Gunakan fitur **Data Import** pada ERPNext untuk mengimpor file CSV secara berurutan sesuai nomor awalan file.
+- Atau jadikan data CSV ini sebagai acuan input manual saat praktikum.
+- Ikuti alur yang dijelaskan dalam `Panduan_Praktik_ERPNext_Manufaktur.md`.
+
+import frappe
+from frappe.utils import nowdate
+
+def run():
+    company = "PT Terang Maju Manufaktur"
+    abbr = "TMM"
+    
+    # Check balance of Stock In Hand - TMM
+    sih = f"Stock In Hand - {abbr}"
+    raw_acc = f"1141 - Persediaan Bahan Baku - {abbr}"
+    
+    sih_bal = frappe.db.sql("""
+        select sum(debit - credit) as bal 
+        from `tabGL Entry` 
+        where account = %s and is_cancelled = 0
+    """, (sih,), as_dict=True)[0].bal or 0.0
+    print(f"Current balance of {sih}: Rp {sih_bal:,.2f}")
+    
+    if sih_bal > 0:
+        cost_center = frappe.db.get_value("Company", company, "cost_center") or frappe.db.get_value("Cost Center", {"company": company, "is_group": 0}, "name")
+        je = frappe.new_doc("Journal Entry")
+        je.voucher_type = "Journal Entry"
+        je.company = company
+        je.posting_date = nowdate()
+        je.user_remark = "Reklasifikasi saldo awal penerimaan barang ke akun 1141 Persediaan Bahan Baku"
+        
+        je.append("accounts", {
+            "account": raw_acc,
+            "debit_in_account_currency": sih_bal,
+            "credit_in_account_currency": 0.0,
+            "cost_center": cost_center
+        })
+        je.append("accounts", {
+            "account": sih,
+            "debit_in_account_currency": 0.0,
+            "credit_in_account_currency": sih_bal,
+            "cost_center": cost_center
+        })
+        
+        je.insert(ignore_permissions=True)
+        je.submit()
+        frappe.db.commit()
+        print(f"Reclassification Journal Entry submitted: {je.name}")
+        
+    # Check new balance of 1141
+    raw_bal = frappe.db.sql("""
+        select sum(debit - credit) as bal 
+        from `tabGL Entry` 
+        where account = %s and is_cancelled = 0
+    """, (raw_acc,), as_dict=True)[0].bal or 0.0
+    print(f"New balance of {raw_acc}: Rp {raw_bal:,.2f}")
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Skema Pelaksanaan Praktikum ERPNext</title>
+<style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; }
+    h1, h2, h3 { color: #2c3e50; }
+    ul { margin-bottom: 15px; }
+    li { margin-bottom: 5px; }
+</style>
+</head>
+<body>
+
+<h1>Skema Pelaksanaan Pengerjaan Studi Kasus ERPNext</h1>
+<p>Dokumen ini berisi skema pelaksanaan dan tutorial pengerjaan ERPNext berdasarkan studi kasus simulasi alur bisnis manufaktur untuk perusahaan <strong>PT Terang Maju Manufaktur (PT TMM)</strong>.</p>
+
+<h2>Tahap 0: Persiapan Master Data (Pra-syarat)</h2>
+<ul>
+    <li>Membuat Item Bahan Baku: <code>RM-001</code> (Papan Kayu Mahoni) dan <code>RM-002</code> (Cat &amp; Pelapis Kayu).</li>
+    <li>Membuat Item Barang Jadi: <code>FG-001</code> (Meja Kayu Minimalis).</li>
+    <li>Membuat Pemasok (Supplier): <code>CV Kayu Nusantara</code>.</li>
+    <li>Membuat Pelanggan (Customer): <code>PT Mebel Indah</code>.</li>
+    <li>Memastikan Gudang tersedia (Gudang Bahan Baku, WIP, dan Barang Jadi).</li>
+</ul>
+
+<h2>Tahap 1: Kasus 1 - Pengadaan Bahan Baku (Procurement &amp; Stock)</h2>
+<ul>
+    <li>Membuat dan men-submit <em>Purchase Order (PO)</em> kepada CV Kayu Nusantara.</li>
+    <li>Membuat <em>Purchase Receipt (GRN)</em> untuk penerimaan barang ke Gudang Bahan Baku.</li>
+    <li>Menerbitkan <em>Purchase Invoice</em> sebagai pengakuan utang.</li>
+</ul>
+
+<h2>Tahap 2: Kasus 2 - Penyusunan Resep Produksi (Bill of Materials - BOM)</h2>
+<ul>
+    <li>Membuat <em>BOM</em> untuk item <code>FG-001</code> yang membutuhkan 2 lembar <code>RM-001</code> dan 1 kaleng <code>RM-002</code>.</li>
+</ul>
+
+<h2>Tahap 3: Kasus 3 - Proses Produksi &amp; Pergerakan Stok (Manufacturing)</h2>
+<ul>
+    <li>Membuat <em>Work Order</em> untuk memproduksi 10 unit <code>FG-001</code>.</li>
+    <li>Melakukan <em>Stock Entry (Material Transfer for Manufacture)</em> untuk memindahkan bahan ke gudang WIP.</li>
+    <li>Melakukan <em>Stock Entry (Manufacture)</em> untuk mencatat hasil produksi menjadi barang jadi.</li>
+</ul>
+
+<h2>Tahap 4: Kasus 4 - Penjualan Produk Jadi (Sales &amp; Fulfillment)</h2>
+<ul>
+    <li>Membuat <em>Sales Order (SO)</em> dari PT Mebel Indah untuk 5 unit <code>FG-001</code>.</li>
+    <li>Membuat <em>Delivery Note (DN)</em> untuk mengirim barang ke pelanggan.</li>
+    <li>Menerbitkan <em>Sales Invoice</em> sebagai tagihan piutang.</li>
+</ul>
+
+<h2>Tahap 5: Kasus 5 - Pelunasan Kas &amp; Biaya Operasional Pabrik</h2>
+<ul>
+    <li>Membuat <em>Payment Entry</em> untuk menerima pembayaran piutang dari PT Mebel Indah ke Bank BCA.</li>
+    <li>Membuat <em>Payment Entry</em> atau <em>Journal Entry</em> untuk pembayaran beban listrik/utilitas pabrik.</li>
+</ul>
+
+<h2>Tahap 6: Evaluasi Laporan Keuangan &amp; Stok (Assessment)</h2>
+<ul>
+    <li>Melakukan pengecekan pada laporan Stock Ledger, Profit and Loss, dan Balance Sheet untuk mencocokkan dengan kunci jawaban pada soal.</li>
+</ul>
+
+</body>
+</html>
+
+import frappe
+
+def run():
+    print("=== MEMULAI TAHAP 0: SETUP MASTER DATA (SOAL PRAKTIKUM PT TMM) ===")
+    company_name = "PT Terang Maju Manufaktur"
+    abbr = "TMM"
+    
+    company = frappe.get_doc("Company", company_name)
+    print(f"Company: {company.name} ({abbr})")
+
+    # Set default operating & stock accounts
+    exp_val = f"Expenses Included In Valuation - {abbr}"
+    if frappe.db.exists("Account", exp_val):
+        company.default_operating_cost_account = exp_val
+        company.expenses_added_to_stock_account = exp_val
+        company.save(ignore_permissions=True)
+    frappe.db.commit()
+
+    # Customer Group non-group
+    cg_name = "Commercial"
+    if not frappe.db.exists("Customer Group", cg_name):
+        frappe.get_doc({
+            "doctype": "Customer Group",
+            "customer_group_name": cg_name,
+            "parent_customer_group": "All Customer Groups",
+            "is_group": 0
+        }).insert(ignore_permissions=True)
+
+    customer_name = "PT Mebel Indah"
+    default_territory = "Indonesia" if frappe.db.exists("Territory", "Indonesia") else "All Territories"
+    if not frappe.db.exists("Customer", customer_name):
+        frappe.get_doc({
+            "doctype": "Customer",
+            "customer_name": customer_name,
+            "customer_group": cg_name,
+            "customer_type": "Company",
+            "territory": default_territory
+        }).insert(ignore_permissions=True)
+        print(f"Customer created: {customer_name}")
+    else:
+        print(f"Customer exists: {customer_name}")
+    frappe.db.commit()
+
+    # SETUP ACCOUNTS (BANK BCA & BEBAN LISTRIK)
+    bank_parent = f"Bank Accounts - {abbr}"
+    bca_acc = f"Bank BCA - {abbr}"
+    if not frappe.db.exists("Account", bca_acc):
+        if frappe.db.exists("Account", bank_parent):
+            frappe.get_doc({
+                "doctype": "Account",
+                "account_name": "Bank BCA",
+                "company": company_name,
+                "parent_account": bank_parent,
+                "account_type": "Bank",
+                "root_type": "Asset",
+                "is_group": 0
+            }).insert(ignore_permissions=True)
+            print(f"Account created: {bca_acc}")
+    else:
+        print(f"Account exists: {bca_acc}")
+
+    # Beban Listrik & Utilitas Pabrik
+    exp_parent = f"Indirect Expenses - {abbr}"
+    if not frappe.db.exists("Account", exp_parent):
+        exp_parent = f"Expenses - {abbr}"
+    
+    util_acc = f"Beban Listrik & Utilitas Pabrik - {abbr}"
+    if not frappe.db.exists("Account", util_acc):
+        frappe.get_doc({
+            "doctype": "Account",
+            "account_name": "Beban Listrik & Utilitas Pabrik",
+            "company": company_name,
+            "parent_account": exp_parent,
+            "account_type": "Expense Account",
+            "root_type": "Expense",
+            "is_group": 0
+        }).insert(ignore_permissions=True)
+        print(f"Account created: {util_acc}")
+    else:
+        print(f"Account exists: {util_acc}")
+    frappe.db.commit()
+
+    print("\n=== TAHAP 0 SELESAI DENGAN SUKSES! DATA MASTER PT TMM SIAP ===")
+
+if __name__ == "__main__":
+    run()
+
+import frappe
+from erpnext.buying.doctype.purchase_order.purchase_order import make_purchase_receipt
+from erpnext.stock.doctype.purchase_receipt.purchase_receipt import make_purchase_invoice
+from frappe.utils import nowdate, nowtime, add_to_date, flt
+
+def run():
+    print("=== MEMULAI TAHAP 1: KASUS 1 - PENGADAAN BAHAN BAKU (PROCUREMENT & STOCK) ===")
+    company_name = "PT Terang Maju Manufaktur"
+    company = frappe.get_doc("Company", company_name)
+    supplier_name = "CV Kayu Nusantara"
+    wh_raw = "Gudang Bahan Baku - TMM"
+
+    # Pastikan Supplier ada
+    if not frappe.db.exists("Supplier", supplier_name):
+        sg = "Raw Material" if frappe.db.exists("Supplier Group", "Raw Material") else "All Supplier Groups"
+        frappe.get_doc({
+            "doctype": "Supplier",
+            "supplier_name": supplier_name,
+            "supplier_group": sg,
+            "supplier_type": "Company",
+            "country": "Indonesia"
+        }).insert(ignore_permissions=True)
+        frappe.db.commit()
+        print(f"Supplier dibuat: {supplier_name}")
+    else:
+        print(f"Supplier ditemukan: {supplier_name}")
+
+    # 1. BUAT PURCHASE ORDER (PO)
+    print("\n--- 1. Membuat Purchase Order (PO) ---")
+    po = frappe.new_doc("Purchase Order")
+    po.company = company_name
+    po.supplier = supplier_name
+    po.transaction_date = nowdate()
+    po.schedule_date = add_to_date(nowdate(), days=3)
+    
+    po.append("items", {
+        "item_code": "RM-001",
+        "qty": 100.0,
+        "rate": 150000.0,
+        "uom": "Lembar",
+        "stock_uom": "Lembar",
+        "schedule_date": add_to_date(nowdate(), days=3),
+        "warehouse": wh_raw
+    })
+    po.append("items", {
+        "item_code": "RM-002",
+        "qty": 20.0,
+        "rate": 50000.0,
+        "uom": "Kaleng",
+        "stock_uom": "Kaleng",
+        "schedule_date": add_to_date(nowdate(), days=3),
+        "warehouse": wh_raw
+    })
+    
+    po.insert(ignore_permissions=True)
+    po.submit()
+    frappe.db.commit()
+    print(f"Purchase Order berhasil disubmit: {po.name}")
+    print(f"Supplier: {po.supplier} | Total Nilai PO: Rp {po.grand_total:,.2f}")
+    for it in po.items:
+        print(f"  - {it.item_code} ({it.item_name}): {it.qty} {it.uom} @ Rp {it.rate:,.2f} = Rp {it.amount:,.2f}")
+
+    # 2. BUAT PURCHASE RECEIPT (GRN)
+    print("\n--- 2. Membuat Purchase Receipt (GRN) Penerimaan Barang ---")
+    pr_doc = make_purchase_receipt(po.name)
+    pr_doc.posting_date = nowdate()
+    pr_doc.posting_time = nowtime()
+    for it in pr_doc.items:
+        it.warehouse = wh_raw
+    pr_doc.insert(ignore_permissions=True)
+    pr_doc.submit()
+    frappe.db.commit()
+    print(f"Purchase Receipt (GRN) berhasil disubmit: {pr_doc.name}")
+    print(f"Barang Diterima di: {wh_raw}")
+
+    # Verifikasi Jurnal Akuntansi GRN
+    print("\n--- Dampak Jurnal Akuntansi (GL Entry) Purchase Receipt ---")
+    pr_gl = frappe.db.sql("""
+        select account, debit, credit 
+        from `tabGL Entry` 
+        where voucher_no = %s and is_cancelled = 0
+    """, (pr_doc.name,), as_dict=True)
+    for gl in pr_gl:
+        print(f"  Account: {gl.account:<40} | Debet: Rp {gl.debit:>12,.2f} | Kredit: Rp {gl.credit:>12,.2f}")
+
+    # 3. BUAT PURCHASE INVOICE (FAKTUR PEMBELIAN)
+    print("\n--- 3. Menerbitkan Purchase Invoice (Faktur Pembelian) ---")
+    pi_doc = make_purchase_invoice(pr_doc.name)
+    pi_doc.posting_date = nowdate()
+    pi_doc.posting_time = nowtime()
+    pi_doc.insert(ignore_permissions=True)
+    pi_doc.submit()
+    frappe.db.commit()
+    print(f"Purchase Invoice berhasil disubmit: {pi_doc.name}")
+    print(f"Total Nilai Tagihan Utang: Rp {pi_doc.grand_total:,.2f} | Status: {pi_doc.status}")
+
+    # Verifikasi Jurnal Akuntansi PI
+    print("\n--- Dampak Jurnal Akuntansi (GL Entry) Purchase Invoice ---")
+    pi_gl = frappe.db.sql("""
+        select account, debit, credit 
+        from `tabGL Entry` 
+        where voucher_no = %s and is_cancelled = 0
+    """, (pi_doc.name,), as_dict=True)
+    for gl in pi_gl:
+        print(f"  Account: {gl.account:<40} | Debet: Rp {gl.debit:>12,.2f} | Kredit: Rp {gl.credit:>12,.2f}")
+
+    # 4. VERIFIKASI SALDO STOK DI GUDANG
+    print(f"\n--- Verifikasi Saldo Fisik di {wh_raw} ---")
+    for code in ["RM-001", "RM-002"]:
+        actual_qty = frappe.db.get_value("Bin", {"item_code": code, "warehouse": wh_raw}, "actual_qty")
+        val_rate = frappe.db.get_value("Bin", {"item_code": code, "warehouse": wh_raw}, "valuation_rate")
+        stock_val = flt(actual_qty) * flt(val_rate)
+        print(f"Item: {code:<8} | Qty: {actual_qty} | Valuation Rate: Rp {flt(val_rate):,.2f} | Total Nilai: Rp {stock_val:,.2f}")
+
+    print("\n=== TAHAP 1 SELESAI DENGAN SUKSES! KASUS 1 TUNTAS ===")
+
+if __name__ == "__main__":
+    run()
+
+import frappe
+from frappe.utils import flt
+
+def run():
+    print("=== MEMULAI TAHAP 2: KASUS 2 - PENYUSUNAN RESEP PRODUKSI (BOM) ===")
+    company_name = "PT Terang Maju Manufaktur"
+    item_code = "FG-001"
+
+    # Periksa apakah BOM sudah ada
+    existing_bom = frappe.db.get_value("BOM", {"item": item_code, "company": company_name, "is_active": 1, "docstatus": 1}, "name")
+    if existing_bom:
+        print(f"BOM aktif sudah ada: {existing_bom}")
+        return
+
+    bom = frappe.new_doc("BOM")
+    bom.item = item_code
+    bom.company = company_name
+    bom.quantity = 1.0
+    bom.uom = "Unit"
+    bom.with_operations = 0
+    bom.is_active = 1
+    bom.is_default = 1
+    bom.rm_cost_as_per = "Valuation Rate"
+    bom.currency = "IDR"
+
+    bom.append("items", {
+        "item_code": "RM-001",
+        "qty": 2.0,
+        "uom": "Lembar",
+        "rate": 150000.0
+    })
+    bom.append("items", {
+        "item_code": "RM-002",
+        "qty": 1.0,
+        "uom": "Kaleng",
+        "rate": 50000.0
+    })
+
+    bom.insert(ignore_permissions=True)
+    bom.submit()
+    frappe.db.commit()
+
+    print(f"BOM berhasil dibuat dan disubmit: {bom.name}")
+    print(f"Produk Jadi: {bom.item} ({bom.item_name}) | Qty: {bom.quantity} {bom.uom}")
+    print(f"Total Biaya Bahan Baku Pokok (HPP Estimasi): Rp {bom.raw_material_cost:,.2f}")
+    for it in bom.items:
+        print(f"  - {it.item_code} ({it.item_name}): {it.qty} {it.uom} @ Rp {it.rate:,.2f} = Rp {it.amount:,.2f}")
+
+    # Set default BOM di master Item FG-001
+    frappe.db.set_value("Item", item_code, "default_bom", bom.name)
+    frappe.db.commit()
+    print(f"Default BOM pada master item {item_code} berhasil diset ke: {bom.name}")
+
+    print("\n=== TAHAP 2 SELESAI DENGAN SUKSES! KASUS 2 TUNTAS ===")
+
+if __name__ == "__main__":
+    run()
+
+import frappe
+from erpnext.manufacturing.doctype.work_order.work_order import make_stock_entry
+from frappe.utils import nowdate, nowtime, now_datetime, flt
+
+def run():
+    print("=== MEMULAI TAHAP 3: KASUS 3 - PROSES PRODUKSI & PERGERAKAN STOK ===")
+    company_name = "PT Terang Maju Manufaktur"
+    item_code = "FG-001"
+    bom_no = "BOM-FG-001-001"
+    order_qty = 10.0
+
+    raw_wh = "Gudang Bahan Baku - TMM"
+    wip_wh = "Gudang WIP - TMM"
+    fg_wh = "Gudang Barang Jadi - TMM"
+
+    # 1. BUAT WORK ORDER (SPK PRODUKSI)
+    print("\n--- 1. Menerbitkan Work Order (SPK Produksi) ---")
+    wo = frappe.new_doc("Work Order")
+    wo.company = company_name
+    wo.production_item = item_code
+    wo.bom_no = bom_no
+    wo.qty = order_qty
+    wo.source_warehouse = raw_wh
+    wo.wip_warehouse = wip_wh
+    wo.fg_warehouse = fg_wh
+    wo.planned_start_date = now_datetime()
+    wo.insert(ignore_permissions=True)
+    wo.submit()
+    frappe.db.commit()
+    print(f"Work Order berhasil disubmit: {wo.name}")
+    print(f"Produk: {wo.production_item} | Qty: {wo.qty} Unit | BOM: {wo.bom_no}")
+
+    # 2. TRANSFER MATERIAL TO WIP (STOCK ENTRY)
+    print("\n--- 2. Transfer Bahan Baku ke WIP (Material Transfer to WIP) ---")
+    se_trf_dict = make_stock_entry(wo.name, "Material Transfer for Manufacture", qty=order_qty)
+    se_trf = frappe.get_doc(se_trf_dict)
+    se_trf.posting_date = nowdate()
+    se_trf.posting_time = nowtime()
+    se_trf.insert(ignore_permissions=True)
+    se_trf.submit()
+    frappe.db.commit()
+    print(f"Stock Entry Transfer ke WIP berhasil disubmit: {se_trf.name}")
+    print(f"Total Nilai Transfer Bahan: Rp {se_trf.total_amount:,.2f}")
+    for it in se_trf.items:
+        print(f"  - {it.item_code} ({it.item_name}): {it.qty} {it.uom} @ Rp {it.basic_rate:,.2f} = Rp {it.amount:,.2f}")
+
+    # Dampak Jurnal Transfer ke WIP
+    print("\n--- Dampak Jurnal Akuntansi (GL Entry) Transfer to WIP ---")
+    trf_gl = frappe.db.sql("""
+        select account, debit, credit 
+        from `tabGL Entry` 
+        where voucher_no = %s and is_cancelled = 0
+    """, (se_trf.name,), as_dict=True)
+    for gl in trf_gl:
+        print(f"  Account: {gl.account:<50} | Debet: Rp {gl.debit:>12,.2f} | Kredit: Rp {gl.credit:>12,.2f}")
+
+    # 3. MANUFACTURE (FINISH PRODUKSI)
+    print("\n--- 3. Penyelesaian Produksi & Penerimaan Barang Jadi (Manufacture) ---")
+    se_mfg_dict = make_stock_entry(wo.name, "Manufacture", qty=order_qty)
+    se_mfg = frappe.get_doc(se_mfg_dict)
+    se_mfg.posting_date = nowdate()
+    se_mfg.posting_time = nowtime()
+    se_mfg.insert(ignore_permissions=True)
+    se_mfg.submit()
+    frappe.db.commit()
+    print(f"Stock Entry Manufacture berhasil disubmit: {se_mfg.name}")
+    print(f"Hasil Produksi Selesai: 10 Unit {item_code} diterima di {fg_wh}")
+
+    # Dampak Jurnal Manufacture
+    print("\n--- Dampak Jurnal Akuntansi (GL Entry) Manufacture ---")
+    mfg_gl = frappe.db.sql("""
+        select account, debit, credit 
+        from `tabGL Entry` 
+        where voucher_no = %s and is_cancelled = 0
+    """, (se_mfg.name,), as_dict=True)
+    for gl in mfg_gl:
+        print(f"  Account: {gl.account:<50} | Debet: Rp {gl.debit:>12,.2f} | Kredit: Rp {gl.credit:>12,.2f}")
+
+    # 4. STATUS WORK ORDER & STOK AKHIR
+    wo.reload()
+    print(f"\nStatus Akhir Work Order {wo.name}: {wo.status} (Produced Qty: {wo.produced_qty})")
+
+    print("\n--- Verifikasi Saldo Persediaan ---")
+    for wh_name, codes in [(raw_wh, ["RM-001", "RM-002"]), (wip_wh, ["RM-001", "RM-002"]), (fg_wh, ["FG-001"])]:
+        print(f"[GUDANG]: {wh_name}")
+        for code in codes:
+            qty = frappe.db.get_value("Bin", {"item_code": code, "warehouse": wh_name}, "actual_qty") or 0.0
+            rate = frappe.db.get_value("Bin", {"item_code": code, "warehouse": wh_name}, "valuation_rate") or 0.0
+            print(f"  Item: {code:<8} | Qty: {qty:<6} | Hrg Satuan: Rp {flt(rate):>10,.2f} | Nilai: Rp {flt(qty)*flt(rate):>12,.2f}")
+
+    print("\n=== TAHAP 3 SELESAI DENGAN SUKSES! KASUS 3 TUNTAS ===")
+
+if __name__ == "__main__":
+    run()
+
+import frappe
+from erpnext.selling.doctype.sales_order.sales_order import make_delivery_note
+from erpnext.stock.doctype.delivery_note.delivery_note import make_sales_invoice
+from frappe.utils import nowdate, nowtime, add_to_date, flt
+
+def run():
+    print("=== MEMULAI TAHAP 4: KASUS 4 - PENJUALAN PRODUK JADI (SALES & FULFILLMENT) ===")
+    company_name = "PT Terang Maju Manufaktur"
+    abbr = "TMM"
+    customer_name = "PT Mebel Indah"
+    item_code = "FG-001"
+    fg_wh = "Gudang Barang Jadi - TMM"
+
+    company = frappe.get_doc("Company", company_name)
+
+    # 0. SETUP AKUN SPESIFIK SESUAI KODE KASUS
+    # 5110 - Harga Pokok Penjualan (HPP)
+    cogs_acc = f"5110 - Harga Pokok Penjualan (HPP) - {abbr}"
+    if not frappe.db.exists("Account", cogs_acc):
+        exp_parent = f"Expenses - {abbr}"
+        if frappe.db.exists("Account", f"Direct Expenses - {abbr}"):
+            exp_parent = f"Direct Expenses - {abbr}"
+        frappe.get_doc({
+            "doctype": "Account",
+            "account_name": "5110 - Harga Pokok Penjualan (HPP)",
+            "company": company_name,
+            "parent_account": exp_parent,
+            "account_type": "Cost of Goods Sold",
+            "root_type": "Expense",
+            "is_group": 0
+        }).insert(ignore_permissions=True)
+        print(f"Created account: {cogs_acc}")
+    company.default_expense_account = cogs_acc
+
+    # 1131 - Piutang Usaha (Debitur)
+    ar_acc = f"1131 - Piutang Usaha (Debitur) - {abbr}"
+    if not frappe.db.exists("Account", ar_acc):
+        ar_parent = f"Current Assets - {abbr}"
+        if frappe.db.exists("Account", f"Accounts Receivable - {abbr}"):
+            ar_parent = f"Accounts Receivable - {abbr}"
+        frappe.get_doc({
+            "doctype": "Account",
+            "account_name": "1131 - Piutang Usaha (Debitur)",
+            "company": company_name,
+            "parent_account": ar_parent,
+            "account_type": "Receivable",
+            "root_type": "Asset",
+            "is_group": 0
+        }).insert(ignore_permissions=True)
+        print(f"Created account: {ar_acc}")
+    company.default_receivable_account = ar_acc
+
+    # 4110 - Pendapatan Penjualan Produk Jadi
+    income_acc = f"4110 - Pendapatan Penjualan Produk Jadi - {abbr}"
+    if not frappe.db.exists("Account", income_acc):
+        inc_parent = f"Income - {abbr}"
+        if frappe.db.exists("Account", f"Direct Income - {abbr}"):
+            inc_parent = f"Direct Income - {abbr}"
+        frappe.get_doc({
+            "doctype": "Account",
+            "account_name": "4110 - Pendapatan Penjualan Produk Jadi",
+            "company": company_name,
+            "parent_account": inc_parent,
+            "account_type": "Income Account",
+            "root_type": "Income",
+            "is_group": 0
+        }).insert(ignore_permissions=True)
+        print(f"Created account: {income_acc}")
+    company.default_income_account = income_acc
+
+    company.save(ignore_permissions=True)
+    frappe.db.commit()
+
+    # 1. BUAT SALES ORDER (SO)
+    print("\n--- 1. Membuat Sales Order (SO) ---")
+    so = frappe.new_doc("Sales Order")
+    so.company = company_name
+    so.customer = customer_name
+    so.transaction_date = nowdate()
+    so.delivery_date = add_to_date(nowdate(), days=3)
+    so.append("items", {
+        "item_code": item_code,
+        "qty": 5.0,
+        "rate": 750000.0,
+        "uom": "Unit",
+        "stock_uom": "Unit",
+        "warehouse": fg_wh,
+        "delivery_date": add_to_date(nowdate(), days=3)
+    })
+    so.insert(ignore_permissions=True)
+    so.submit()
+    frappe.db.commit()
+    print(f"Sales Order berhasil disubmit: {so.name}")
+    print(f"Customer: {so.customer} | Total Nilai SO: Rp {so.grand_total:,.2f}")
+    for it in so.items:
+        print(f"  - {it.item_code} ({it.item_name}): {it.qty} {it.uom} @ Rp {it.rate:,.2f} = Rp {it.amount:,.2f}")
+
+    # 2. BUAT DELIVERY NOTE (DN) PENGIRIMAN BARANG
+    print("\n--- 2. Membuat Delivery Note (DN) Pengiriman Barang Jadi ---")
+    dn_doc = make_delivery_note(so.name)
+    dn_doc.posting_date = nowdate()
+    dn_doc.posting_time = nowtime()
+    for it in dn_doc.items:
+        it.warehouse = fg_wh
+        it.expense_account = cogs_acc
+    dn_doc.insert(ignore_permissions=True)
+    dn_doc.submit()
+    frappe.db.commit()
+    print(f"Delivery Note berhasil disubmit: {dn_doc.name}")
+    print(f"Barang Keluar dari: {fg_wh} | Qty Dikirim: {dn_doc.items[0].qty} Unit")
+
+    # Dampak Jurnal Delivery Note
+    print("\n--- Dampak Jurnal Akuntansi (GL Entry) Delivery Note ---")
+    dn_gl = frappe.db.sql("""
+        select account, debit, credit 
+        from `tabGL Entry` 
+        where voucher_no = %s and is_cancelled = 0
+    """, (dn_doc.name,), as_dict=True)
+    for gl in dn_gl:
+        print(f"  Account: {gl.account:<50} | Debet: Rp {gl.debit:>12,.2f} | Kredit: Rp {gl.credit:>12,.2f}")
+
+    # 3. BUAT SALES INVOICE (FAKTUR PENJUALAN)
+    print("\n--- 3. Menerbitkan Sales Invoice (Faktur Penjualan) ---")
+    si_doc = make_sales_invoice(dn_doc.name)
+    si_doc.posting_date = nowdate()
+    si_doc.posting_time = nowtime()
+    si_doc.debit_to = ar_acc
+    for it in si_doc.items:
+        it.income_account = income_acc
+        it.expense_account = cogs_acc
+    si_doc.insert(ignore_permissions=True)
+    si_doc.submit()
+    frappe.db.commit()
+    print(f"Sales Invoice berhasil disubmit: {si_doc.name}")
+    print(f"Total Tagihan Piutang: Rp {si_doc.grand_total:,.2f} | Status: {si_doc.status}")
+
+    # Dampak Jurnal Sales Invoice
+    print("\n--- Dampak Jurnal Akuntansi (GL Entry) Sales Invoice ---")
+    si_gl = frappe.db.sql("""
+        select account, debit, credit 
+        from `tabGL Entry` 
+        where voucher_no = %s and is_cancelled = 0
+    """, (si_doc.name,), as_dict=True)
+    for gl in si_gl:
+        print(f"  Account: {gl.account:<50} | Debet: Rp {gl.debit:>12,.2f} | Kredit: Rp {gl.credit:>12,.2f}")
+
+    # 4. VERIFIKASI SALDO BARANG JADI AKHIR
+    sisa_fg = frappe.db.get_value("Bin", {"item_code": item_code, "warehouse": fg_wh}, "actual_qty")
+    val_rate = frappe.db.get_value("Bin", {"item_code": item_code, "warehouse": fg_wh}, "valuation_rate")
+    total_val = flt(sisa_fg) * flt(val_rate)
+    print(f"\n--- Verifikasi Saldo di {fg_wh} ---")
+    print(f"Item: {item_code} | Sisa Stok: {sisa_fg} Unit | Hrg Pokok: Rp {flt(val_rate):,.2f} | Total Nilai: Rp {total_val:,.2f}")
+
+    print("\n=== TAHAP 4 SELESAI DENGAN SUKSES! KASUS 4 TUNTAS ===")
+
+if __name__ == "__main__":
+    run()
+
+import frappe
+from erpnext.accounts.doctype.payment_entry.payment_entry import get_payment_entry
+from frappe.utils import nowdate, nowtime, flt
+
+def run():
+    print("=== MEMULAI TAHAP 5: KASUS 5 - PELUNASAN KAS & BIAYA OPERASIONAL PABRIK ===")
+    company_name = "PT Terang Maju Manufaktur"
+    abbr = "TMM"
+    company = frappe.get_doc("Company", company_name)
+    si_name = "ACC-SINV-2026-00002"
+    
+    # 0. SETUP / RENAME AKUN SESUAI KODE SOAL
+    # Akun Bank BCA
+    bca_acc = f"1112 - Bank BCA - {abbr}"
+    if not frappe.db.exists("Account", bca_acc):
+        old_bca = f"Bank BCA - {abbr}"
+        if frappe.db.exists("Account", old_bca):
+            frappe.rename_doc("Account", old_bca, bca_acc, force=True)
+            print(f"Renamed account to: {bca_acc}")
+        else:
+            bank_parent = f"Bank Accounts - {abbr}"
+            frappe.get_doc({
+                "doctype": "Account",
+                "account_name": "1112 - Bank BCA",
+                "company": company_name,
+                "parent_account": bank_parent,
+                "account_type": "Bank",
+                "root_type": "Asset",
+                "is_group": 0
+            }).insert(ignore_permissions=True)
+            print(f"Created account: {bca_acc}")
+
+    # Akun Beban Listrik & Utilitas Pabrik
+    util_acc = f"5310 - Beban Listrik & Utilitas Pabrik - {abbr}"
+    if not frappe.db.exists("Account", util_acc):
+        old_util = f"Beban Listrik & Utilitas Pabrik - {abbr}"
+        if frappe.db.exists("Account", old_util):
+            frappe.rename_doc("Account", old_util, util_acc, force=True)
+            print(f"Renamed account to: {util_acc}")
+        else:
+            exp_parent = f"Expenses - {abbr}"
+            if frappe.db.exists("Account", f"Indirect Expenses - {abbr}"):
+                exp_parent = f"Indirect Expenses - {abbr}"
+            frappe.get_doc({
+                "doctype": "Account",
+                "account_name": "5310 - Beban Listrik & Utilitas Pabrik",
+                "company": company_name,
+                "parent_account": exp_parent,
+                "account_type": "Expense Account",
+                "root_type": "Expense",
+                "is_group": 0
+            }).insert(ignore_permissions=True)
+            print(f"Created account: {util_acc}")
+
+    frappe.db.commit()
+
+    # 1. PELUNASAN PIUTANG DARI PT MEBEL INDAH (PAYMENT ENTRY)
+    print("\n--- 1. Pencatatan Pelunasan Piutang (Payment Entry) ---")
+    pe = get_payment_entry("Sales Invoice", si_name, bank_account=bca_acc)
+    pe.posting_date = nowdate()
+    pe.paid_to = bca_acc
+    pe.reference_no = f"TRF-BCA-MEBEL-{nowdate()}"
+    pe.reference_date = nowdate()
+    pe.insert(ignore_permissions=True)
+    pe.submit()
+    frappe.db.commit()
+    print(f"Payment Entry berhasil disubmit: {pe.name}")
+    print(f"Dari Pelanggan: {pe.party_name} | Diterima di: {pe.paid_to} | Jumlah: Rp {pe.paid_amount:,.2f}")
+
+    # Dampak Jurnal Pelunasan Piutang
+    print("\n--- Dampak Jurnal Akuntansi (GL Entry) Pelunasan Piutang ---")
+    pe_gl = frappe.db.sql("""
+        select account, debit, credit 
+        from `tabGL Entry` 
+        where voucher_no = %s and is_cancelled = 0
+    """, (pe.name,), as_dict=True)
+    for gl in pe_gl:
+        print(f"  Account: {gl.account:<50} | Debet: Rp {gl.debit:>12,.2f} | Kredit: Rp {gl.credit:>12,.2f}")
+
+    # 2. PEMBAYARAN BEBAN LISTRIK & UTILITAS PABRIK (JOURNAL ENTRY)
+    print("\n--- 2. Pencatatan Pembayaran Beban Listrik & Utilitas Pabrik ---")
+    cost_center = company.cost_center or frappe.db.get_value("Cost Center", {"company": company_name, "is_group": 0}, "name")
+    
+    je = frappe.new_doc("Journal Entry")
+    je.voucher_type = "Bank Entry"
+    je.company = company_name
+    je.posting_date = nowdate()
+    je.user_remark = "Pembayaran beban listrik & utilitas operasional pabrik akhir bulan"
+    
+    je.append("accounts", {
+        "account": util_acc,
+        "debit_in_account_currency": 500000.0,
+        "credit_in_account_currency": 0.0,
+        "cost_center": cost_center
+    })
+    je.append("accounts", {
+        "account": bca_acc,
+        "debit_in_account_currency": 0.0,
+        "credit_in_account_currency": 500000.0,
+        "cost_center": cost_center
+    })
+    
+    je.insert(ignore_permissions=True)
+    je.submit()
+    frappe.db.commit()
+    print(f"Journal Entry Beban Utilitas berhasil disubmit: {je.name}")
+    print(f"Dibayar dari: {bca_acc} | Beban: {util_acc} | Jumlah: Rp 500,000.00")
+
+    # Dampak Jurnal Beban Utilitas
+    print("\n--- Dampak Jurnal Akuntansi (GL Entry) Beban Utilitas Pabrik ---")
+    je_gl = frappe.db.sql("""
+        select account, debit, credit 
+        from `tabGL Entry` 
+        where voucher_no = %s and is_cancelled = 0
+    """, (je.name,), as_dict=True)
+    for gl in je_gl:
+        print(f"  Account: {gl.account:<50} | Debet: Rp {gl.debit:>12,.2f} | Kredit: Rp {gl.credit:>12,.2f}")
+
+    # 3. VERIFIKASI SALDO AKHIR BANK BCA
+    bca_balance = frappe.db.sql("""
+        select sum(debit - credit) as balance 
+        from `tabGL Entry` 
+        where account = %s and is_cancelled = 0
+    """, (bca_acc,), as_dict=True)[0].balance or 0.0
+
+    print(f"\n--- Saldo Akhir Rekening {bca_acc} ---")
+    print(f"Saldo Akhir: Rp {flt(bca_balance):,.2f} (Penerimaan Rp 3.750.000 - Pengeluaran Beban Rp 500.000)")
+
+    print("\n=== TAHAP 5 SELESAI DENGAN SUKSES! KASUS 5 TUNTAS ===")
+
+if __name__ == "__main__":
+    run()
+
+import frappe
+from erpnext.accounts.doctype.payment_entry.payment_entry import get_payment_entry
+from frappe.utils import nowdate, nowtime, flt
+
+def run():
+    print("=== MEMULAI PENYELESAIAN TAHAP 5: KASUS 5 ===")
+    company_name = "PT Terang Maju Manufaktur"
+    abbr = "TMM"
+    company = frappe.get_doc("Company", company_name)
+    si_name = "ACC-SINV-2026-00002"
+    
+    bca_acc = f"1112 - Bank BCA - {abbr}"
+    util_acc = f"5310 - Beban Listrik & Utilitas Pabrik - {abbr}"
+
+    # 1. CEK / JALANKAN PELUNASAN PIUTANG
+    pe_name = frappe.db.get_value("Payment Entry", {"party": "PT Mebel Indah", "docstatus": 1}, "name")
+    if not pe_name:
+        print("\n--- 1. Pencatatan Pelunasan Piutang (Payment Entry) ---")
+        pe = get_payment_entry("Sales Invoice", si_name, bank_account=bca_acc)
+        pe.posting_date = nowdate()
+        pe.paid_to = bca_acc
+        pe.reference_no = f"TRF-BCA-MEBEL-{nowdate()}"
+        pe.reference_date = nowdate()
+        pe.insert(ignore_permissions=True)
+        pe.submit()
+        frappe.db.commit()
+        pe_name = pe.name
+        print(f"Payment Entry berhasil disubmit: {pe_name}")
+    else:
+        print(f"Payment Entry sudah ada & tersimpan: {pe_name}")
+
+    print("\n--- Dampak Jurnal Akuntansi (GL Entry) Pelunasan Piutang ---")
+    pe_gl = frappe.db.sql("""
+        select account, debit, credit 
+        from `tabGL Entry` 
+        where voucher_no = %s and is_cancelled = 0
+    """, (pe_name,), as_dict=True)
+    for gl in pe_gl:
+        print(f"  Account: {gl.account:<50} | Debet: Rp {gl.debit:>12,.2f} | Kredit: Rp {gl.credit:>12,.2f}")
+
+    # 2. PEMBAYARAN BEBAN LISTRIK & UTILITAS PABRIK
+    je_name = frappe.db.get_value("Journal Entry", {"user_remark": "Pembayaran beban listrik & utilitas operasional pabrik akhir bulan", "docstatus": 1}, "name")
+    if not je_name:
+        print("\n--- 2. Pencatatan Pembayaran Beban Listrik & Utilitas Pabrik ---")
+        cost_center = company.cost_center or frappe.db.get_value("Cost Center", {"company": company_name, "is_group": 0}, "name")
+        
+        je = frappe.new_doc("Journal Entry")
+        je.voucher_type = "Bank Entry"
+        je.company = company_name
+        je.posting_date = nowdate()
+        je.cheque_no = f"TRF-PLN-{nowdate()}"
+        je.cheque_date = nowdate()
+        je.user_remark = "Pembayaran beban listrik & utilitas operasional pabrik akhir bulan"
+        
+        je.append("accounts", {
+            "account": util_acc,
+            "debit_in_account_currency": 500000.0,
+            "credit_in_account_currency": 0.0,
+            "cost_center": cost_center
+        })
+        je.append("accounts", {
+            "account": bca_acc,
+            "debit_in_account_currency": 0.0,
+            "credit_in_account_currency": 500000.0,
+            "cost_center": cost_center
+        })
+        
+        je.insert(ignore_permissions=True)
+        je.submit()
+        frappe.db.commit()
+        je_name = je.name
+        print(f"Journal Entry Beban Utilitas berhasil disubmit: {je_name}")
+    else:
+        print(f"Journal Entry sudah ada: {je_name}")
+
+    print("\n--- Dampak Jurnal Akuntansi (GL Entry) Beban Utilitas Pabrik ---")
+    je_gl = frappe.db.sql("""
+        select account, debit, credit 
+        from `tabGL Entry` 
+        where voucher_no = %s and is_cancelled = 0
+    """, (je_name,), as_dict=True)
+    for gl in je_gl:
+        print(f"  Account: {gl.account:<50} | Debet: Rp {gl.debit:>12,.2f} | Kredit: Rp {gl.credit:>12,.2f}")
+
+    # 3. VERIFIKASI SALDO AKHIR BANK BCA
+    bca_balance = frappe.db.sql("""
+        select sum(debit - credit) as balance 
+        from `tabGL Entry` 
+        where account = %s and is_cancelled = 0
+    """, (bca_acc,), as_dict=True)[0].balance or 0.0
+
+    print(f"\n--- Saldo Akhir Rekening {bca_acc} ---")
+    print(f"Saldo Akhir Kas/Bank: Rp {flt(bca_balance):,.2f} (Penerimaan Rp 3.750.000 - Pembayaran Beban Rp 500.000)")
+
+    print("\n=== TAHAP 5 SELESAI DENGAN SUKSES! KASUS 5 TUNTAS ===")
+
+if __name__ == "__main__":
+    run()
+
+import frappe
+from frappe.utils import flt
+
+def run():
+    print("==========================================================================")
+    print("=== TAHAP 6: LEMBAR EVALUASI & PENCOCOKAN KUNCI JAWABAN (ASSESSMENT) ===")
+    print("==========================================================================")
+    company_name = "PT Terang Maju Manufaktur"
+    abbr = "TMM"
+    
+    # Helper to get account balance from GL Entry
+    def get_gl_balance(acc_sub):
+        res = frappe.db.sql("""
+            select sum(gle.debit) as deb, sum(gle.credit) as cred, a.root_type
+            from `tabGL Entry` gle
+            join `tabAccount` a on a.name = gle.account
+            where gle.company = %s and gle.account like %s and gle.is_cancelled = 0
+            group by a.root_type
+        """, (company_name, f"%{acc_sub}%"), as_dict=True)
+        if not res:
+            return 0.0
+        deb = flt(res[0].deb)
+        cred = flt(res[0].cred)
+        root = res[0].root_type
+        if root in ['Asset', 'Expense']:
+            return deb - cred
+        else: # Liability, Equity, Income
+            return cred - deb
+
+    # 1. AMBIL SALDO AKUN REAL DARI ERPNEXT
+    val_1141 = get_gl_balance("1141 - Persediaan Bahan Baku")
+    val_1144 = get_gl_balance("1144 - Persediaan Barang Jadi")
+    val_4110 = get_gl_balance("4110 - Pendapatan Penjualan Produk Jadi")
+    val_5110 = get_gl_balance("5110 - Harga Pokok Penjualan")
+    gross_profit = val_4110 - val_5110
+    val_5310 = get_gl_balance("5310 - Beban Listrik & Utilitas Pabrik")
+    net_profit = gross_profit - val_5310
+
+    # 2. DEFINISI KUNCI JAWABAN (BENCHMARK SOAL)
+    assessment = [
+        {
+            "no": 1,
+            "parameter": "Persediaan Bahan Baku (1141)",
+            "formula": "Sisa Stock RM-001 & RM-002",
+            "kunci": 12500000.0,
+            "real": val_1141
+        },
+        {
+            "no": 2,
+            "parameter": "Persediaan Barang Jadi (1144)",
+            "formula": "Sisa Stock 5 Unit FG-001",
+            "kunci": 1750000.0,
+            "real": val_1144
+        },
+        {
+            "no": 3,
+            "parameter": "Total Pendapatan Penjualan (4110)",
+            "formula": "5 Unit @ Rp 750.000",
+            "kunci": 3750000.0,
+            "real": val_4110
+        },
+        {
+            "no": 4,
+            "parameter": "Total Harga Pokok Penjualan (5110)",
+            "formula": "5 Unit @ Rp 350.000",
+            "kunci": 1750000.0,
+            "real": val_5110
+        },
+        {
+            "no": 5,
+            "parameter": "Laba Kotor (Gross Profit)",
+            "formula": "Pendapatan - HPP",
+            "kunci": 2000000.0,
+            "real": gross_profit
+        },
+        {
+            "no": 6,
+            "parameter": "Beban Utilitas Pabrik (5310)",
+            "formula": "Beban Operasional",
+            "kunci": 500000.0,
+            "real": val_5310
+        },
+        {
+            "no": 7,
+            "parameter": "Laba Bersih Operasional (Net Profit)",
+            "formula": "Laba Kotor - Beban",
+            "kunci": 1500000.0,
+            "real": net_profit
+        }
+    ]
+
+    # 3. CETAK TABEL PENCOCOKAN EVALUASI
+    print(f"{'No':<3} | {'Parameter / Akun':<38} | {'Kunci Jawaban':<16} | {'Nilai Real ERP':<16} | {'Status'}")
+    print("-" * 88)
+    all_matched = True
+    for item in assessment:
+        kunci_str = f"Rp {item['kunci']:>12,.2f}"
+        real_str = f"Rp {item['real']:>12,.2f}"
+        diff = item['real'] - item['kunci']
+        status = "SESUAI 100% [V]" if diff == 0 else f"SELISIH ({diff:,.2f})"
+        if diff != 0:
+            all_matched = False
+        print(f"{item['no']:<3} | {item['parameter']:<38} | {kunci_str:<16} | {real_str:<16} | {status}")
+    print("-" * 88)
+
+    # 4. RINCIAN POSISI FISIK GUDANG
+    print("\n--- Rincian Verifikasi Fisik Gudang (Stock Ledger) ---")
+    bins = frappe.db.sql("""
+        select b.warehouse, b.item_code, i.item_name, b.actual_qty, b.valuation_rate, (b.actual_qty * b.valuation_rate) as total_val
+        from `tabBin` b
+        join `tabItem` i on i.name = b.item_code
+        join `tabWarehouse` w on w.name = b.warehouse
+        where w.company = %s and b.actual_qty > 0
+        order by b.warehouse, b.item_code
+    """, (company_name,), as_dict=True)
+    
+    current_wh = ""
+    for b in bins:
+        if b.warehouse != current_wh:
+            current_wh = b.warehouse
+            print(f"\n[GUDANG]: {current_wh}")
+        print(f"  * {b.item_code:<8} - {b.item_name:<25} : {b.actual_qty:<5.1f} unit @ Rp {b.valuation_rate:>10,.2f} = Rp {b.total_val:>12,.2f}")
+
+    print("\n==========================================================================")
+    if all_matched:
+        print("HASIL EVALUASI: SELURUH PARAMETER TERVERIFIKASI 100% COCOK DENGAN KUNCI JAWABAN!")
+    else:
+        print("HASIL EVALUASI: TERDAPAT PENYESUAIAN PADA BEBERAPA AKUN.")
+    print("==========================================================================")
+
+if __name__ == "__main__":
+    run()
+
+SOAL PRAKTIKUM & STUDI KASUS ERPNEXT
+Simulasi Alur Bisnis Industri Manufaktur Terintegrasi (End-to-End)
+———————————————————————————————————————————————————————
+1. Informasi Umum & Profil Perusahaan
+Modul soal praktikum ini dirancang untuk melatih pemahaman dan keterampilan operasional dalam mengimplementasikan sistem ERPNext pada industri manufaktur. Studi kasus ini menggunakan alur bisnis riil yang saling terintegrasi mulai dari pengadaan bahan baku, manajemen BOM, proses produksi, hingga penjualan dan pelunasan pembayaran.
+IDENTITAS PERUSAHAAN SIMULASI• Nama Perusahaan : PT Terang Maju Manufaktur (PT TMM)• Jenis Industri : Manufaktur Furniture (Produk Utama: Meja Kayu Minimalis)• Strategi Produksi : Make to Stock (MTS)• Metode Akuntansi Persediaan : Perpetual Inventory System• Referensi Bagan Akun : File Excel 'kode-akun-manufaktur-erpnext.xlsx'
+
+2. Kasus 1: Pengadaan Bahan Baku (Procurement & Stock)
+Skenario Bisnis: Departemen Pembelian menerbitkan Purchase Order (PO) kepada vendor 'CV Kayu Nusantara' untuk memasok bahan baku produksi dengan rincian sebagai berikut:
+Kode Item
+Nama Barang
+Jumlah
+Harga Satuan (Rp)
+Total Harga (Rp)
+
+RM-001
+Papan Kayu Mahoni
+100 Lembar
+150.000
+15.000.000
+
+RM-002
+Cat & Pelapis Kayu
+20 Kaleng
+50.000
+1.000.000
+
+Instruksi Praktikum ERPNext:
+Buat dokumen Purchase Order (PO) sesuai rincian di atas dan lakukan Submit.
+Buat dokumen Purchase Receipt (GRN) untuk mencatat penerimaan 100% barang di Gudang Bahan Baku.
+Terbitkan Purchase Invoice berdasarkan Purchase Receipt tersebut.
+Dampak Jurnal Akuntansi (General Ledger):
+Tahapan Dokumen
+Kode & Nama Akun
+Debet (Rp)
+Kredit (Rp)
+
+Purchase Receipt
+1141 - Persediaan Bahan Baku
+16.000.000
+-
+
+Purchase Receipt
+2120 - Utang Penerimaan Barang
+-
+16.000.000
+
+Purchase Invoice
+2120 - Utang Penerimaan Barang
+16.000.000
+-
+
+Purchase Invoice
+2110 - Utang Usaha (Supplier)
+-
+16.000.000
+
+3. Kasus 2: Penyusunan Resep Produksi (Bill of Materials - BOM)
+Skenario Bisnis: Bagian Teknik/R&D menyusun struktur kebutuhan bahan baku (Bill of Materials) untuk memproduksi 1 Unit barang jadi FG-001 (Meja Kayu Minimalis).
+Kode Komponen
+Nama Bahan
+Kuantitas Kebutuhan
+Biaya Satuan (Rp)
+Total Biaya (Rp)
+
+RM-001
+Papan Kayu Mahoni
+2 Lembar
+150.000
+300.000
+
+RM-002
+Cat & Pelapis Kayu
+1 Kaleng
+50.000
+50.000
+
+Catatan Estimasi HPP Pokok Bahan Baku per 1 Unit FG-001 = Rp 350.000
+4. Kasus 3: Proses Produksi & Pergerakan Stok (Manufacturing Workflow)
+Skenario Bisnis: Berdasarkan rencana persediaan, Manajer Produksi menerbitkan perintah kerja (Work Order) untuk memproduksi 10 unit FG-001 (Meja Kayu Minimalis).
+Buat Work Order sebanyak 10 unit untuk item FG-001 berdasarkan BOM yang telah dibuat.
+Lakukan Stock Entry (Material Transfer to WIP) untuk memindahkan bahan baku dari Gudang Bahan Baku ke Gudang Barang Dalam Proses (WIP).
+Lakukan Stock Entry (Manufacture) saat proses perakitan selesai untuk mencatat hasil barang jadi di Gudang Barang Jadi.
+Tahapan Dokumen
+Kode & Nama Akun
+Debet (Rp)
+Kredit (Rp)
+
+Transfer to WIP
+1143 - Persediaan Barang Dalam Proses (WIP)
+3.500.000
+-
+
+Transfer to WIP
+1141 - Persediaan Bahan Baku
+-
+3.500.000
+
+Manufacture (Finish)
+1144 - Persediaan Barang Jadi
+3.500.000
+-
+
+Manufacture (Finish)
+1143 - Persediaan Barang Dalam Proses (WIP)
+-
+3.500.000
+
+5. Kasus 4: Penjualan Produk Jadi (Sales & Fulfillment)
+Skenario Bisnis: Tim Sales menerima pesanan dari pelanggan 'PT Mebel Indah' untuk membeli 5 unit FG-001 (Meja Kayu Minimalis) dengan harga jual Rp 750.000 per unit.
+Buat Sales Order (SO) untuk pelanggan PT Mebel Indah (5 unit FG-001 @ Rp 750.000 = Rp 3.750.000).
+Buat Delivery Note (DN) untuk mengirimkan 5 unit barang dari Gudang Barang Jadi ke pelanggan.
+Terbitkan Sales Invoice (SI) penagihan piutang usaha.
+Tahapan Dokumen
+Kode & Nama Akun
+Debet (Rp)
+Kredit (Rp)
+
+Delivery Note
+5110 - Harga Pokok Penjualan (HPP)
+1.750.000
+-
+
+Delivery Note
+1144 - Persediaan Barang Jadi
+-
+1.750.000
+
+Sales Invoice
+1131 - Piutang Usaha (Debitur)
+3.750.000
+-
+
+Sales Invoice
+4110 - Pendapatan Penjualan Produk Jadi
+-
+3.750.000
+
+6. Kasus 5: Pelunasan Kas & Biaya Operasional Pabrik
+Skenario Bisnis: Perusahaan melakukan pencatatan transaksi kas/bank akhir bulan sebagai berikut:
+Penerimaan pelunasan piutang dari PT Mebel Indah sebesar Rp 3.750.000 melalui transfer Bank BCA (Payment Entry).
+Pembayaran beban listrik & utilitas operasional pabrik sebesar Rp 500.000 dari rekening Bank BCA (Journal Entry / Payment Entry).
+Tahapan Dokumen
+Kode & Nama Akun
+Debet (Rp)
+Kredit (Rp)
+
+Pelunasan Piutang
+1112 - Bank BCA
+3.750.000
+-
+
+Pelunasan Piutang
+1131 - Piutang Usaha (Debitur)
+-
+3.750.000
+
+Beban Utilitas Pabrik
+5310 - Beban Listrik & Utilitas Pabrik
+500.000
+-
+
+Beban Utilitas Pabrik
+1112 - Bank BCA
+-
+500.000
+
+7. Lembar Evaluasi & Kunci Jawaban (Assessment)
+Setelah menyelesaikan seluruh transaksi di atas pada ERPNext, buka modul Reports (Stock Ledger, Profit and Loss, Balance Sheet) dan cocokkan saldo akhir dengan kunci jawaban berikut:
+Laporan & Nama Akun / Parameter
+Kuantitas / Formula
+Nilai Akhir (Rp)
+
+Persediaan Bahan Baku (1141)
+Sisa Stock RM-001 & RM-002
+12.500.000
+
+Persediaan Barang Jadi (1144)
+Sisa Stock 5 Unit FG-001
+1.750.000
+
+Total Pendapatan Penjualan (4110)
+5 Unit @ Rp 750.000
+3.750.000
+
+Total Harga Pokok Penjualan (5110)
+5 Unit @ Rp 350.000
+1.750.000
+
+Laba Kotor (Gross Profit)
+Pendapatan - HPP
+2.000.000
+
+Beban Utilitas Pabrik (5310)
+Beban Operasional
+500.000
+
+Laba Bersih Operasional (Net Profit)
+Laba Kotor - Beban
+1.500.000
+
+
+import frappe
+
+def run():
+    print("=== MEMULAI TAHAP 1: SETUP DATA MASTER ===")
+
+    # 0. SETUP PREREQUISITES
+    # Warehouse Types
+    wh_types = ["Transit", "Stores", "Work In Progress", "Finished Goods", "Scrap", "Sub Assembly"]
+    for wht in wh_types:
+        if not frappe.db.exists("Warehouse Type", wht):
+            frappe.get_doc({
+                "doctype": "Warehouse Type",
+                "name": wht
+            }).insert(ignore_permissions=True)
+            print(f"Warehouse Type created: {wht}")
+    frappe.db.commit()
+
+    # Root Item Group
+    if not frappe.db.exists("Item Group", "All Item Groups"):
+        frappe.get_doc({
+            "doctype": "Item Group",
+            "item_group_name": "All Item Groups",
+            "is_group": 1
+        }).insert(ignore_permissions=True)
+        print("Root Item Group created: All Item Groups")
+        frappe.db.commit()
+
+    # Root Customer Group
+    if not frappe.db.exists("Customer Group", "All Customer Groups"):
+        frappe.get_doc({
+            "doctype": "Customer Group",
+            "customer_group_name": "All Customer Groups",
+            "is_group": 1
+        }).insert(ignore_permissions=True)
+        print("Root Customer Group created: All Customer Groups")
+        frappe.db.commit()
+
+    # Root Supplier Group
+    if not frappe.db.exists("Supplier Group", "All Supplier Groups"):
+        frappe.get_doc({
+            "doctype": "Supplier Group",
+            "supplier_group_name": "All Supplier Groups",
+            "is_group": 1
+        }).insert(ignore_permissions=True)
+        print("Root Supplier Group created: All Supplier Groups")
+        frappe.db.commit()
+
+    # Root Territory
+    if not frappe.db.exists("Territory", "All Territories"):
+        frappe.get_doc({
+            "doctype": "Territory",
+            "territory_name": "All Territories",
+            "is_group": 1
+        }).insert(ignore_permissions=True)
+        print("Root Territory created: All Territories")
+        frappe.db.commit()
+
+    # 1. SETUP COMPANY
+    company_name = "PT Rio Ferdinanda Manufaktur"
+    abbr = "RFM"
+    if not frappe.db.exists("Company", company_name):
+        print(f"Creating Company: {company_name}")
+        company = frappe.get_doc({
+            "doctype": "Company",
+            "company_name": company_name,
+            "abbr": abbr,
+            "default_currency": "IDR",
+            "country": "Indonesia"
+        })
+        company.insert(ignore_permissions=True)
+        frappe.db.commit()
+        print(f"Company created: {company.name}")
+    else:
+        print(f"Company already exists: {company_name}")
+
+    frappe.db.set_default("company", company_name)
+    frappe.db.commit()
+
+    # 2. SETUP ITEM GROUPS
+    item_groups = [
+        {"name": "Bahan Baku", "parent": "All Item Groups"},
+        {"name": "Bahan Penolong", "parent": "All Item Groups"},
+        {"name": "Barang Dalam Proses", "parent": "All Item Groups"},
+        {"name": "Produk Jadi", "parent": "All Item Groups"}
+    ]
+    for ig in item_groups:
+        if not frappe.db.exists("Item Group", ig["name"]):
+            doc = frappe.get_doc({
+                "doctype": "Item Group",
+                "item_group_name": ig["name"],
+                "parent_item_group": ig["parent"],
+                "is_group": 0
+            })
+            doc.insert(ignore_permissions=True)
+            print(f"Item Group created: {ig['name']}")
+        else:
+            print(f"Item Group exists: {ig['name']}")
+    frappe.db.commit()
+
+    # 3. SETUP WAREHOUSES
+    parent_wh = f"All Warehouses - {abbr}"
+    if not frappe.db.exists("Warehouse", parent_wh):
+        existing_wh = frappe.db.get_value("Warehouse", {"company": company_name, "is_group": 1}, "name")
+        if existing_wh:
+            parent_wh = existing_wh
+        else:
+            parent_wh = None
+
+    warehouses = [
+        {"warehouse_name": "Gudang Bahan Baku - RF", "type": "Stores", "desc": "Penyimpanan material mentah kayu dan besi"},
+        {"warehouse_name": "Gudang WIP Produksi - RF", "type": "Work In Progress", "desc": "Tempat transit barang dalam proses perakitan"},
+        {"warehouse_name": "Gudang Barang Jadi - RF", "type": "Finished Goods", "desc": "Penyimpanan produk jadi siap kirim"},
+        {"warehouse_name": "Gudang Scrap Rusak - RF", "type": "Scrap", "desc": "Penyimpanan sisa potongan atau barang reject"}
+    ]
+    for wh in warehouses:
+        full_wh_name = f"{wh['warehouse_name']} - {abbr}"
+        if not frappe.db.exists("Warehouse", full_wh_name) and not frappe.db.exists("Warehouse", wh["warehouse_name"]):
+            wh_doc = {
+                "doctype": "Warehouse",
+                "warehouse_name": wh["warehouse_name"],
+                "warehouse_type": wh["type"],
+                "company": company_name,
+                "is_group": 0
+            }
+            if parent_wh:
+                wh_doc["parent_warehouse"] = parent_wh
+            doc = frappe.get_doc(wh_doc)
+            doc.insert(ignore_permissions=True)
+            print(f"Warehouse created: {doc.name}")
+        else:
+            print(f"Warehouse exists: {wh['warehouse_name']}")
+    frappe.db.commit()
+
+    # 4. SETUP UOM
+    for uom in ["Nos", "Meter", "Kaleng", "Lembar"]:
+        if not frappe.db.exists("UOM", uom):
+            doc = frappe.get_doc({"doctype": "UOM", "uom_name": uom})
+            doc.insert(ignore_permissions=True)
+            print(f"UOM created: {uom}")
+    frappe.db.commit()
+
+    # 5. SETUP ITEMS
+    items = [
+        {
+            "item_code": "RAW-KAYU-01",
+            "item_name": "Papan Kayu Solid Pinus 120x60x2cm",
+            "item_group": "Bahan Baku",
+            "stock_uom": "Nos",
+            "valuation_rate": 85000,
+            "standard_rate": 95000,
+            "description": "Papan kayu pinus olahan untuk daun meja belajar",
+            "is_stock_item": 1
+        },
+        {
+            "item_code": "RAW-PIPA-01",
+            "item_name": "Pipa Besi Hollow 4x4 Tebal 1.6mm (Batang 6m)",
+            "item_group": "Bahan Baku",
+            "stock_uom": "Nos",
+            "valuation_rate": 110000,
+            "standard_rate": 125000,
+            "description": "Bahan dasar rangka meja dan kaki kursi",
+            "is_stock_item": 1
+        },
+        {
+            "item_code": "RAW-BAUT-01",
+            "item_name": "Baut & Mur Hex Galvanis M6x30",
+            "item_group": "Bahan Penolong",
+            "stock_uom": "Nos",
+            "valuation_rate": 1000,
+            "standard_rate": 1500,
+            "description": "Baut perakit rangka besi dan kayu",
+            "is_stock_item": 1
+        },
+        {
+            "item_code": "RAW-CAT-01",
+            "item_name": "Cat Anti Karat Black Doff (Kaleng 1L)",
+            "item_group": "Bahan Penolong",
+            "stock_uom": "Nos",
+            "valuation_rate": 45000,
+            "standard_rate": 50000,
+            "description": "Cat pelapis rangka besi anti korosi",
+            "is_stock_item": 1
+        },
+        {
+            "item_code": "RAW-KAKI-01",
+            "item_name": "Karet Pelindung Alas Kaki 4x4cm",
+            "item_group": "Bahan Penolong",
+            "stock_uom": "Nos",
+            "valuation_rate": 2500,
+            "standard_rate": 3500,
+            "description": "Karet penutup ujung pipa besi peredam lantai",
+            "is_stock_item": 1
+        },
+        {
+            "item_code": "RAW-AMPLAS-01",
+            "item_name": "Kertas Amplas Kayu No 240",
+            "item_group": "Bahan Penolong",
+            "stock_uom": "Nos",
+            "valuation_rate": 4000,
+            "standard_rate": 5000,
+            "description": "Kertas amplas untuk finishing kayu",
+            "is_stock_item": 1
+        },
+        {
+            "item_code": "WIP-RANGKA-01",
+            "item_name": "Sub-Assembly Rangka Besi Meja RF-100",
+            "item_group": "Barang Dalam Proses",
+            "stock_uom": "Nos",
+            "valuation_rate": 130000,
+            "standard_rate": 150000,
+            "description": "Rangka meja yang sudah dipotong dan dilas sebelum dicat",
+            "is_stock_item": 1
+        },
+        {
+            "item_code": "PROD-MEJA-01",
+            "item_name": "Meja Belajar Minimalis RF-100",
+            "item_group": "Produk Jadi",
+            "stock_uom": "Nos",
+            "valuation_rate": 245000,
+            "standard_rate": 475000,
+            "description": "Meja belajar minimalis kayu solid dengan rangka besi hollow",
+            "is_stock_item": 1
+        },
+        {
+            "item_code": "PROD-RAK-01",
+            "item_name": "Rak Buku Sudut Industrial RF-200",
+            "item_group": "Produk Jadi",
+            "stock_uom": "Nos",
+            "valuation_rate": 180000,
+            "standard_rate": 350000,
+            "description": "Rak buku susun 3 bergaya industrial kombinasi kayu dan besi",
+            "is_stock_item": 1
+        }
+    ]
+
+    for item_data in items:
+        code = item_data["item_code"]
+        if not frappe.db.exists("Item", code):
+            doc = frappe.get_doc({
+                "doctype": "Item",
+                "item_code": code,
+                "item_name": item_data["item_name"],
+                "item_group": item_data["item_group"],
+                "stock_uom": item_data["stock_uom"],
+                "is_stock_item": item_data["is_stock_item"],
+                "include_item_in_manufacturing": 1 if "RAW" in code or "WIP" in code else 0,
+                "valuation_rate": item_data["valuation_rate"],
+                "standard_rate": item_data["standard_rate"],
+                "description": item_data["description"]
+            })
+            doc.insert(ignore_permissions=True)
+            print(f"Item created: {code} - {item_data['item_name']}")
+        else:
+            print(f"Item exists: {code}")
+    frappe.db.commit()
+
+    # 6. SETUP SUPPLIERS
+    for sg in ["Raw Material", "Hardware"]:
+        if not frappe.db.exists("Supplier Group", sg):
+            frappe.get_doc({
+                "doctype": "Supplier Group",
+                "supplier_group_name": sg,
+                "parent_supplier_group": "All Supplier Groups",
+                "is_group": 0
+            }).insert(ignore_permissions=True)
+
+    suppliers = [
+        {"name": "PT Kayu Rimba Perkasa", "group": "Raw Material", "type": "Company", "country": "Indonesia"},
+        {"name": "CV Logam Baja Nusantara", "group": "Raw Material", "type": "Company", "country": "Indonesia"},
+        {"name": "Toko Baut Citra Fastener", "group": "Hardware", "type": "Individual", "country": "Indonesia"},
+        {"name": "UD Cahaya Cat Finishing", "group": "Hardware", "type": "Individual", "country": "Indonesia"}
+    ]
+    for s in suppliers:
+        if not frappe.db.exists("Supplier", s["name"]):
+            doc = frappe.get_doc({
+                "doctype": "Supplier",
+                "supplier_name": s["name"],
+                "supplier_group": s["group"],
+                "supplier_type": s["type"],
+                "country": s["country"]
+            })
+            doc.insert(ignore_permissions=True)
+            print(f"Supplier created: {s['name']}")
+        else:
+            print(f"Supplier exists: {s['name']}")
+    frappe.db.commit()
+
+    # 7. SETUP CUSTOMERS
+    for cg in ["Commercial", "Individual"]:
+        if not frappe.db.exists("Customer Group", cg):
+            frappe.get_doc({
+                "doctype": "Customer Group",
+                "customer_group_name": cg,
+                "parent_customer_group": "All Customer Groups",
+                "is_group": 0
+            }).insert(ignore_permissions=True)
+
+    # Territory
+    if not frappe.db.exists("Territory", "Indonesia"):
+        frappe.get_doc({
+            "doctype": "Territory",
+            "territory_name": "Indonesia",
+            "parent_territory": "All Territories",
+            "is_group": 0
+        }).insert(ignore_permissions=True)
+
+    default_territory = "Indonesia" if frappe.db.exists("Territory", "Indonesia") else "All Territories"
+
+    customers = [
+        {"name": "Toko Furnitur Sejahtera Abadi", "group": "Commercial", "type": "Company"},
+        {"name": "CV Karya Mandiri Edukasi", "group": "Commercial", "type": "Company"},
+        {"name": "Bpk. Budi Santoso (Home Office)", "group": "Individual", "type": "Individual"},
+        {"name": "Ibu Rina Wijaya (Interior Studio)", "group": "Individual", "type": "Individual"}
+    ]
+    for c in customers:
+        c_name = c["name"]
+        if not frappe.db.exists("Customer", c_name):
+            doc = frappe.get_doc({
+                "doctype": "Customer",
+                "customer_name": c_name,
+                "customer_group": c["group"],
+                "customer_type": c["type"],
+                "territory": default_territory
+            })
+            doc.insert(ignore_permissions=True)
+            print(f"Customer created: {c_name}")
+        else:
+            print(f"Customer exists: {c_name}")
+    frappe.db.commit()
+
+    print("=== TAHAP 1 SELESAI DENGAN SUKSES! ===")
+
+if __name__ == "__main__":
+    run()
+
+import frappe
+
+def run():
+    print("=== MEMULAI TAHAP 2: SETUP MANUFAKTUR (WORKSTATIONS, OPERATIONS, BOM) ===")
+    company_name = "PT Rio Ferdinanda Manufaktur"
+    
+    # 1. SETUP WORKSTATIONS
+    workstations = [
+        {
+            "name": "WS-POTONG",
+            "workstation_name": "Stasiun Kerja Pemotongan Kayu & Besi",
+            "hour_rate": 60000,
+            "description": "Area mesin potong gerinda duduk dan table saw"
+        },
+        {
+            "name": "WS-LAS",
+            "workstation_name": "Stasiun Kerja Pengelasan & Rangka",
+            "hour_rate": 65000,
+            "description": "Area pengelasan rangka besi dan perataan sudut"
+        },
+        {
+            "name": "WS-CAT",
+            "workstation_name": "Stasiun Kerja Finishing & Pengecatan",
+            "hour_rate": 55000,
+            "description": "Bilik semprot spray gun cat anti karat dan oven pengering"
+        },
+        {
+            "name": "WS-RAKIT",
+            "workstation_name": "Stasiun Kerja Perakitan & Quality Control",
+            "hour_rate": 50000,
+            "description": "Meja perakitan akhir kayu dan kaki besi serta pengecekan QC"
+        }
+    ]
+
+    ws_map = {}
+    for ws in workstations:
+        ws_doc = None
+        # Check by name or workstation_name
+        if frappe.db.exists("Workstation", ws["workstation_name"]):
+            ws_doc = frappe.get_doc("Workstation", ws["workstation_name"])
+            print(f"Workstation exists: {ws_doc.name}")
+        elif frappe.db.exists("Workstation", ws["name"]):
+            ws_doc = frappe.get_doc("Workstation", ws["name"])
+            print(f"Workstation exists: {ws_doc.name}")
+        else:
+            ws_doc = frappe.get_doc({
+                "doctype": "Workstation",
+                "workstation_name": ws["workstation_name"],
+                "hour_rate": ws["hour_rate"],
+                "description": ws["description"]
+            })
+            ws_doc.insert(ignore_permissions=True)
+            print(f"Workstation created: {ws_doc.name}")
+        ws_map[ws["name"]] = ws_doc.name
+        ws_map[ws["workstation_name"]] = ws_doc.name
+    frappe.db.commit()
+
+    # 2. SETUP OPERATIONS
+    operations = [
+        {
+            "name": "Pemotongan Bahan Baku (Cutting)",
+            "description": "Proses memotong papan kayu dan memotong pipa besi sesuai ukuran desain",
+            "default_ws": ws_map["WS-POTONG"]
+        },
+        {
+            "name": "Pengelasan Rangka (Welding)",
+            "description": "Proses menyambung potongan pipa besi menjadi rangka kokoh",
+            "default_ws": ws_map["WS-LAS"]
+        },
+        {
+            "name": "Pengecatan dan Finishing (Coating)",
+            "description": "Proses pelapisan anti karat dan semprot cat hitam doff",
+            "default_ws": ws_map["WS-CAT"]
+        },
+        {
+            "name": "Perakitan Akhir & QC (Assembly)",
+            "description": "Pemasangan daun meja kayu ke rangka besi dengan baut dan uji stabilitas",
+            "default_ws": ws_map["WS-RAKIT"]
+        }
+    ]
+
+    for op in operations:
+        if not frappe.db.exists("Operation", op["name"]):
+            op_doc = frappe.get_doc({
+                "doctype": "Operation",
+                "name": op["name"],
+                "workstation": op["default_ws"],
+                "description": op["description"]
+            })
+            op_doc.insert(ignore_permissions=True)
+            print(f"Operation created: {op['name']}")
+        else:
+            print(f"Operation exists: {op['name']}")
+    frappe.db.commit()
+
+    # 3. SETUP BOM FOR PROD-MEJA-01
+    meja_item = "PROD-MEJA-01"
+    existing_meja_bom = frappe.db.get_value("BOM", {"item": meja_item, "is_active": 1, "docstatus": 1}, "name")
+    if not existing_meja_bom:
+        # Check if draft exists
+        draft_bom = frappe.db.get_value("BOM", {"item": meja_item, "docstatus": 0}, "name")
+        if draft_bom:
+            bom_doc = frappe.get_doc("BOM", draft_bom)
+        else:
+            bom_doc = frappe.get_doc({
+                "doctype": "BOM",
+                "item": meja_item,
+                "company": company_name,
+                "quantity": 1.0,
+                "uom": "Nos",
+                "with_operations": 1,
+                "is_active": 1,
+                "is_default": 1,
+                "currency": "IDR",
+                "rm_cost_as_per": "Valuation Rate",
+                "items": [
+                    {"item_code": "RAW-KAYU-01", "qty": 1.0, "rate": 85000, "uom": "Nos"},
+                    {"item_code": "RAW-PIPA-01", "qty": 0.5, "rate": 110000, "uom": "Nos"},
+                    {"item_code": "RAW-BAUT-01", "qty": 8.0, "rate": 1000, "uom": "Nos"},
+                    {"item_code": "RAW-CAT-01", "qty": 0.25, "rate": 45000, "uom": "Nos"},
+                    {"item_code": "RAW-KAKI-01", "qty": 4.0, "rate": 2500, "uom": "Nos"},
+                    {"item_code": "RAW-AMPLAS-01", "qty": 1.0, "rate": 4000, "uom": "Nos"}
+                ],
+                "operations": [
+                    {
+                        "operation": "Pemotongan Bahan Baku (Cutting)",
+                        "workstation": ws_map["WS-POTONG"],
+                        "time_in_mins": 15,
+                        "hour_rate": 60000
+                    },
+                    {
+                        "operation": "Pengelasan Rangka (Welding)",
+                        "workstation": ws_map["WS-LAS"],
+                        "time_in_mins": 20,
+                        "hour_rate": 65000
+                    },
+                    {
+                        "operation": "Pengecatan dan Finishing (Coating)",
+                        "workstation": ws_map["WS-CAT"],
+                        "time_in_mins": 15,
+                        "hour_rate": 55000
+                    },
+                    {
+                        "operation": "Perakitan Akhir & QC (Assembly)",
+                        "workstation": ws_map["WS-RAKIT"],
+                        "time_in_mins": 20,
+                        "hour_rate": 50000
+                    }
+                ]
+            })
+            bom_doc.insert(ignore_permissions=True)
+        bom_doc.submit()
+        print(f"BOM Meja created and submitted: {bom_doc.name}")
+    else:
+        print(f"BOM Meja already exists and active: {existing_meja_bom}")
+    frappe.db.commit()
+
+    # 4. SETUP BOM FOR PROD-RAK-01
+    rak_item = "PROD-RAK-01"
+    existing_rak_bom = frappe.db.get_value("BOM", {"item": rak_item, "is_active": 1, "docstatus": 1}, "name")
+    if not existing_rak_bom:
+        draft_rak_bom = frappe.db.get_value("BOM", {"item": rak_item, "docstatus": 0}, "name")
+        if draft_rak_bom:
+            bom_doc = frappe.get_doc("BOM", draft_rak_bom)
+        else:
+            bom_doc = frappe.get_doc({
+                "doctype": "BOM",
+                "item": rak_item,
+                "company": company_name,
+                "quantity": 1.0,
+                "uom": "Nos",
+                "with_operations": 1,
+                "is_active": 1,
+                "is_default": 1,
+                "currency": "IDR",
+                "rm_cost_as_per": "Valuation Rate",
+                "items": [
+                    {"item_code": "RAW-KAYU-01", "qty": 0.75, "rate": 85000, "uom": "Nos"},
+                    {"item_code": "RAW-PIPA-01", "qty": 0.4, "rate": 110000, "uom": "Nos"},
+                    {"item_code": "RAW-BAUT-01", "qty": 12.0, "rate": 1000, "uom": "Nos"},
+                    {"item_code": "RAW-CAT-01", "qty": 0.2, "rate": 45000, "uom": "Nos"},
+                    {"item_code": "RAW-KAKI-01", "qty": 4.0, "rate": 2500, "uom": "Nos"}
+                ],
+                "operations": [
+                    {
+                        "operation": "Pemotongan Bahan Baku (Cutting)",
+                        "workstation": ws_map["WS-POTONG"],
+                        "time_in_mins": 15,
+                        "hour_rate": 60000
+                    },
+                    {
+                        "operation": "Pengelasan Rangka (Welding)",
+                        "workstation": ws_map["WS-LAS"],
+                        "time_in_mins": 15,
+                        "hour_rate": 65000
+                    },
+                    {
+                        "operation": "Pengecatan dan Finishing (Coating)",
+                        "workstation": ws_map["WS-CAT"],
+                        "time_in_mins": 12,
+                        "hour_rate": 55000
+                    },
+                    {
+                        "operation": "Perakitan Akhir & QC (Assembly)",
+                        "workstation": ws_map["WS-RAKIT"],
+                        "time_in_mins": 15,
+                        "hour_rate": 50000
+                    }
+                ]
+            })
+            bom_doc.insert(ignore_permissions=True)
+        bom_doc.submit()
+        print(f"BOM Rak created and submitted: {bom_doc.name}")
+    else:
+        print(f"BOM Rak already exists and active: {existing_rak_bom}")
+    frappe.db.commit()
+
+    print("=== TAHAP 2 SELESAI DENGAN SUKSES! ===")
+
+if __name__ == "__main__":
+    run()
+
+import frappe
+from frappe.utils import flt, nowdate, nowtime
+
+def run():
+    print("=== MEMULAI TAHAP 3: INPUT SALDO AWAL PERSEDIAAN (OPENING STOCK) ===")
+    company_name = "PT Rio Ferdinanda Manufaktur"
+    company = frappe.get_doc("Company", company_name)
+    
+    target_warehouse = "Gudang Bahan Baku - RF - RFM"
+    if not frappe.db.exists("Warehouse", target_warehouse):
+        # Fallback check
+        wh = frappe.db.get_value("Warehouse", {"warehouse_name": "Gudang Bahan Baku - RF", "company": company_name}, "name")
+        if wh:
+            target_warehouse = wh
+        else:
+            raise Exception(f"Gudang {target_warehouse} tidak ditemukan!")
+
+    cost_center = company.cost_center or frappe.db.get_value("Cost Center", {"company": company_name, "is_group": 0}, "name")
+    expense_account = company.stock_adjustment_account or frappe.db.get_value("Account", {"account_type": "Stock Adjustment", "company": company_name}, "name")
+
+    items_data = [
+        {"item_code": "RAW-KAYU-01", "qty": 50.0, "rate": 85000.0},
+        {"item_code": "RAW-PIPA-01", "qty": 30.0, "rate": 110000.0},
+        {"item_code": "RAW-BAUT-01", "qty": 500.0, "rate": 1000.0},
+        {"item_code": "RAW-CAT-01", "qty": 20.0, "rate": 45000.0},
+        {"item_code": "RAW-KAKI-01", "qty": 200.0, "rate": 2500.0},
+        {"item_code": "RAW-AMPLAS-01", "qty": 50.0, "rate": 4000.0}
+    ]
+
+    # Check if a submitted opening Stock Entry for this company and warehouse already exists
+    existing = frappe.db.sql("""
+        select se.name from `tabStock Entry` se
+        join `tabStock Entry Detail` sed on sed.parent = se.name
+        where se.company = %s and se.purpose = 'Material Receipt' and sed.t_warehouse = %s and se.docstatus = 1
+    """, (company_name, target_warehouse), as_dict=True)
+
+    if existing:
+        print(f"Opening stock entry already exists: {existing[0].name}")
+        return
+
+    se = frappe.new_doc("Stock Entry")
+    se.stock_entry_type = "Material Receipt"
+    se.purpose = "Material Receipt"
+    se.company = company_name
+    se.to_warehouse = target_warehouse
+    se.posting_date = nowdate()
+    se.posting_time = nowtime()
+
+    for item in items_data:
+        uom = frappe.db.get_value("Item", item["item_code"], "stock_uom")
+        se.append("items", {
+            "item_code": item["item_code"],
+            "qty": item["qty"],
+            "uom": uom,
+            "stock_uom": uom,
+            "conversion_factor": 1.0,
+            "t_warehouse": target_warehouse,
+            "basic_rate": item["rate"],
+            "cost_center": cost_center,
+            "expense_account": expense_account
+        })
+
+    se.insert(ignore_permissions=True)
+    se.submit()
+    frappe.db.commit()
+    print(f"Stock Entry Saldo Awal berhasil disubmit: {se.name}")
+    print(f"Total Nilai Persediaan Ditambahkan: Rp {se.total_amount:,.2f}")
+
+    # Check stock balances
+    print("\n--- Verifikasi Saldo Stok Bahan Baku ---")
+    for item in items_data:
+        actual_qty = frappe.db.get_value(
+            "Bin", 
+            {"item_code": item["item_code"], "warehouse": target_warehouse}, 
+            "actual_qty"
+        )
+        val_rate = frappe.db.get_value(
+            "Bin", 
+            {"item_code": item["item_code"], "warehouse": target_warehouse}, 
+            "valuation_rate"
+        )
+        print(f"Item: {item['item_code']} | Qty: {actual_qty} | Valuation Rate: Rp {flt(val_rate):,.2f}")
+
+    print("=== TAHAP 3 SELESAI DENGAN SUKSES! ===")
+
+if __name__ == "__main__":
+    run()
+
+import frappe
+from frappe.utils import nowdate, nowtime, now_datetime, add_to_date, flt
+from erpnext.manufacturing.doctype.work_order.work_order import make_stock_entry
+
+def run():
+    print("=== MEMULAI TAHAP 4: SIKLUS PRODUKSI (WORK ORDER & JOB CARDS) ===")
+    company_name = "PT Rio Ferdinanda Manufaktur"
+    company = frappe.get_doc("Company", company_name)
+    
+    customer_name = "Toko Furnitur Sejahtera Abadi"
+    item_code = "PROD-MEJA-01"
+    bom_no = "BOM-PROD-MEJA-01-001"
+    order_qty = 10.0
+    selling_price = 475000.0
+
+    raw_wh = "Gudang Bahan Baku - RF - RFM"
+    wip_wh = "Gudang WIP Produksi - RF - RFM"
+    fg_wh = "Gudang Barang Jadi - RF - RFM"
+
+    # 1. BUAT SALES ORDER
+    print("\n--- 1. Membuat Sales Order ---")
+    so = frappe.new_doc("Sales Order")
+    so.company = company_name
+    so.customer = customer_name
+    so.transaction_date = nowdate()
+    so.delivery_date = add_to_date(nowdate(), days=7)
+    so.append("items", {
+        "item_code": item_code,
+        "qty": order_qty,
+        "rate": selling_price,
+        "delivery_date": add_to_date(nowdate(), days=7),
+        "warehouse": fg_wh
+    })
+    so.insert(ignore_permissions=True)
+    so.submit()
+    frappe.db.commit()
+    print(f"Sales Order berhasil dibuat & disubmit: {so.name}")
+    print(f"Customer: {so.customer} | Total Nilai SO: Rp {so.grand_total:,.2f}")
+
+    # 2. BUAT WORK ORDER
+    print("\n--- 2. Membuat Work Order (SPK Produksi) ---")
+    wo = frappe.new_doc("Work Order")
+    wo.company = company_name
+    wo.production_item = item_code
+    wo.bom_no = bom_no
+    wo.qty = order_qty
+    wo.sales_order = so.name
+    wo.source_warehouse = raw_wh
+    wo.wip_warehouse = wip_wh
+    wo.fg_warehouse = fg_wh
+    wo.planned_start_date = now_datetime()
+    wo.insert(ignore_permissions=True)
+    wo.submit()
+    frappe.db.commit()
+    print(f"Work Order berhasil dibuat & disubmit: {wo.name}")
+    print(f"Item: {wo.production_item} | Qty to Produce: {wo.qty} Nos")
+
+    # 3. TRANSFER MATERIAL FOR MANUFACTURE (RAW -> WIP)
+    print("\n--- 3. Transfer Bahan Baku ke Gudang WIP ---")
+    se_transfer_dict = make_stock_entry(wo.name, "Material Transfer for Manufacture", qty=order_qty)
+    se_transfer = frappe.get_doc(se_transfer_dict)
+    se_transfer.posting_date = nowdate()
+    se_transfer.posting_time = nowtime()
+    se_transfer.insert(ignore_permissions=True)
+    se_transfer.submit()
+    frappe.db.commit()
+    print(f"Stock Entry Transfer Bahan ke WIP berhasil: {se_transfer.name}")
+    print(f"Dari: {raw_wh} -> Ke: {wip_wh}")
+    for it in se_transfer.items:
+        print(f"  - {it.item_code} ({it.item_name}): {it.qty} {it.uom}")
+
+    # 4. EKSEKUSI JOB CARDS
+    print("\n--- 4. Eksekusi & Penyelesaian Job Cards ---")
+    job_cards = frappe.get_all(
+        "Job Card", 
+        filters={"work_order": wo.name}, 
+        fields=["name", "operation", "workstation", "for_quantity"]
+    )
+    print(f"Ditemukan {len(job_cards)} Job Card untuk Work Order ini:")
+
+    base_time = now_datetime()
+    for idx, jc_info in enumerate(job_cards):
+        jc = frappe.get_doc("Job Card", jc_info.name)
+        start_time = add_to_date(base_time, minutes=idx * 30)
+        end_time = add_to_date(start_time, minutes=20)
+        
+        jc.append("time_logs", {
+            "from_time": start_time,
+            "to_time": end_time,
+            "time_in_mins": 20,
+            "completed_qty": jc.for_quantity
+        })
+        jc.for_quantity = jc.for_quantity
+        jc.docstatus = 0
+        jc.save(ignore_permissions=True)
+        jc.submit()
+        frappe.db.commit()
+        print(f"  [Job Card Selesai] {jc.name} | Operasi: {jc.operation} | WS: {jc.workstation} | Qty: {jc.for_quantity}")
+
+    # 5. MANUFACTURE STOCK ENTRY (WIP -> FG)
+    print("\n--- 5. Penyelesaian Produksi & Penerimaan Barang Jadi (Manufacture) ---")
+    se_mfg_dict = make_stock_entry(wo.name, "Manufacture", qty=order_qty)
+    se_mfg = frappe.get_doc(se_mfg_dict)
+    se_mfg.posting_date = nowdate()
+    se_mfg.posting_time = nowtime()
+    se_mfg.insert(ignore_permissions=True)
+    se_mfg.submit()
+    frappe.db.commit()
+    print(f"Stock Entry Manufacture berhasil: {se_mfg.name}")
+    print(f"Hasil Produksi Diterima di: {fg_wh}")
+
+    # Reload Work Order to check status
+    wo.reload()
+    print(f"Status Akhir Work Order {wo.name}: {wo.status} (Produced Qty: {wo.produced_qty})")
+
+    # Verifikasi Saldo Barang Jadi
+    fg_qty = frappe.db.get_value("Bin", {"item_code": item_code, "warehouse": fg_wh}, "actual_qty")
+    fg_val = frappe.db.get_value("Bin", {"item_code": item_code, "warehouse": fg_wh}, "valuation_rate")
+    print(f"\n--- Verifikasi Stok Barang Jadi di {fg_wh} ---")
+    print(f"Item: {item_code} | Stok Tersedia: {fg_qty} Nos | Valuation Rate (HPP Satuan): Rp {flt(fg_val):,.2f}")
+
+    print("=== TAHAP 4 SELESAI DENGAN SUKSES! ===")
+
+if __name__ == "__main__":
+    run()
+
+import frappe
+from erpnext.selling.doctype.sales_order.sales_order import make_delivery_note
+from erpnext.stock.doctype.delivery_note.delivery_note import make_sales_invoice
+from erpnext.accounts.doctype.payment_entry.payment_entry import get_payment_entry
+from frappe.utils import nowdate, nowtime, flt
+
+def run():
+    print("=== MEMULAI TAHAP 5: PENGIRIMAN & PENJUALAN (DELIVERY, INVOICING & PAYMENT) ===")
+    company_name = "PT Rio Ferdinanda Manufaktur"
+    company = frappe.get_doc("Company", company_name)
+    so_name = "SAL-ORD-2026-00001"
+    fg_wh = "Gudang Barang Jadi - RF - RFM"
+
+    # Setup Bank BCA account if not exists
+    bank_parent = f"Bank Accounts - {company.abbr}"
+    bca_acc_name = f"Bank BCA - {company.abbr}"
+    if not frappe.db.exists("Account", bca_acc_name):
+        frappe.get_doc({
+            "doctype": "Account",
+            "account_name": "Bank BCA",
+            "company": company_name,
+            "parent_account": bank_parent,
+            "account_type": "Bank",
+            "root_type": "Asset",
+            "is_group": 0
+        }).insert(ignore_permissions=True)
+        print(f"Akun Bank BCA dibuat: {bca_acc_name}")
+    frappe.db.commit()
+
+    # 1. BUAT DELIVERY NOTE (SURAT JALAN)
+    print("\n--- 1. Menerbitkan Delivery Note (Surat Jalan) ---")
+    dn_doc = make_delivery_note(so_name)
+    dn_doc.posting_date = nowdate()
+    dn_doc.posting_time = nowtime()
+    for it in dn_doc.items:
+        it.warehouse = fg_wh
+    dn_doc.insert(ignore_permissions=True)
+    dn_doc.submit()
+    frappe.db.commit()
+    print(f"Delivery Note berhasil disubmit: {dn_doc.name}")
+    print(f"Customer: {dn_doc.customer} | Item: {dn_doc.items[0].item_code} | Qty Dikirim: {dn_doc.items[0].qty} Nos")
+
+    # Verifikasi Stok setelah Delivery Note
+    item_code = "PROD-MEJA-01"
+    sisa_fg = frappe.db.get_value("Bin", {"item_code": item_code, "warehouse": fg_wh}, "actual_qty")
+    print(f"Sisa Stok di {fg_wh}: {sisa_fg} Nos (Stok berkurang sesuai barang terkirim)")
+
+    # 2. BUAT SALES INVOICE (FAKTUR PENJUALAN)
+    print("\n--- 2. Menerbitkan Sales Invoice (Faktur Penjualan) ---")
+    si_doc = make_sales_invoice(dn_doc.name)
+    si_doc.posting_date = nowdate()
+    si_doc.posting_time = nowtime()
+    si_doc.insert(ignore_permissions=True)
+    si_doc.submit()
+    frappe.db.commit()
+    print(f"Sales Invoice berhasil disubmit: {si_doc.name}")
+    print(f"Total Nilai Tagihan Piutang: Rp {si_doc.grand_total:,.2f} | Status: {si_doc.status}")
+
+    # 3. BUAT PAYMENT ENTRY (PENERIMAAN PEMBAYARAN KAS/BANK)
+    print("\n--- 3. Menerbitkan Payment Entry (Penerimaan Pelunasan) ---")
+    pe = get_payment_entry("Sales Invoice", si_doc.name, bank_account=bca_acc_name)
+    pe.posting_date = nowdate()
+    pe.paid_to = bca_acc_name
+    pe.reference_no = f"TRF-BCA-{nowdate()}"
+    pe.reference_date = nowdate()
+    pe.insert(ignore_permissions=True)
+    pe.submit()
+    frappe.db.commit()
+    print(f"Payment Entry berhasil disubmit: {pe.name}")
+    print(f"Diterima di Akun: {pe.paid_to} | Jumlah Diterima: Rp {pe.paid_amount:,.2f}")
+
+    # Reload Sales Invoice to verify status
+    si_doc.reload()
+    print(f"Status Akhir Sales Invoice {si_doc.name}: {si_doc.status} (Outstanding: Rp {flt(si_doc.outstanding_amount):,.2f})")
+
+    print("\n=== TAHAP 5 SELESAI DENGAN SUKSES! ===")
+
+if __name__ == "__main__":
+    run()
+
+import frappe
+from frappe.utils import flt, fmt_money
+
+def run():
+    print("======================================================================")
+    print("=== TAHAP 6: ANALISIS LAPORAN MANUFAKTUR, PERSEDIAAN & KEUANGAN ===")
+    print("======================================================================")
+    
+    company_name = "PT Rio Ferdinanda Manufaktur"
+    
+    # 1. LAPORAN POSISI STOK GUDANG (STOCK BALANCE)
+    print("\n" + "="*50)
+    print("1. LAPORAN POSISI PERSEDIAAN GUDANG (STOCK BALANCE)")
+    print("="*50)
+    
+    bins = frappe.db.sql("""
+        select b.warehouse, b.item_code, i.item_name, i.item_group, b.actual_qty, b.valuation_rate, b.stock_value
+        from `tabBin` b
+        join `tabItem` i on i.name = b.item_code
+        join `tabWarehouse` w on w.name = b.warehouse
+        where w.company = %s and (b.actual_qty != 0 or b.stock_value != 0)
+        order by b.warehouse, b.item_code
+    """, (company_name,), as_dict=True)
+    
+    current_wh = ""
+    total_inventory_value = 0.0
+    for b in bins:
+        if b.warehouse != current_wh:
+            current_wh = b.warehouse
+            print(f"\n[GUDANG]: {current_wh}")
+            print(f"{'Kode Item':<16} | {'Nama Barang':<35} | {'Stok':<8} | {'Hrg Satuan':<15} | {'Total Nilai'}")
+            print("-" * 95)
+        print(f"{b.item_code:<16} | {b.item_name[:35]:<35} | {b.actual_qty:<8.1f} | Rp {b.valuation_rate:>11,.2f} | Rp {b.stock_value:>12,.2f}")
+        total_inventory_value += flt(b.stock_value)
+        
+    print("-" * 95)
+    print(f"TOTAL NILAI ASET PERSEDIAAN AKHIR GUDANG: Rp {total_inventory_value:,.2f}")
+
+    # 2. LAPORAN BIAYA PRODUKSI & HPP (MANUFACTURING COST ANALYTICS)
+    print("\n" + "="*50)
+    print("2. LAPORAN BIAYA PRODUKSI & HPP (MANUFACTURING COST)")
+    print("="*50)
+    
+    wo = frappe.get_doc("Work Order", "MFG-WO-2026-00001")
+    bom = frappe.get_doc("BOM", wo.bom_no)
+    mfg_entry = frappe.get_doc("Stock Entry", "MAT-STE-2026-00003")
+    
+    print(f"Work Order ID         : {wo.name}")
+    print(f"Produk Dihasilkan     : {wo.production_item} ({wo.qty} Nos)")
+    print(f"BOM Referensi         : {wo.bom_no}")
+    print(f"Stock Entry Finish    : {mfg_entry.name}")
+    print(f"Biaya Bahan Baku Baku : Rp {bom.raw_material_cost * wo.qty:,.2f}")
+    print(f"Biaya Operasi WS      : Rp {bom.operating_cost * wo.qty:,.2f}")
+    print(f"Total Biaya Produksi  : Rp {(bom.raw_material_cost + bom.operating_cost) * wo.qty:,.2f}")
+    
+    fg_row = [it for it in mfg_entry.items if it.item_code == wo.production_item][0]
+    print(f"HPP Satuan per Meja   : Rp {fg_row.basic_rate:,.2f} / unit")
+
+    # 3. LAPORAN LABA RUGI (PROFIT AND LOSS STATEMENT)
+    print("\n" + "="*50)
+    print("3. LAPORAN LABA RUGI PENJUALAN (PROFIT & LOSS STATEMENT)")
+    print("="*50)
+    
+    # Query GL Entries
+    gl_entries = frappe.db.sql("""
+        select gle.account, a.root_type, sum(gle.debit) as total_debit, sum(gle.credit) as total_credit
+        from `tabGL Entry` gle
+        join `tabAccount` a on a.name = gle.account
+        where gle.company = %s and gle.is_cancelled = 0 and a.root_type in ('Income', 'Expense')
+        group by gle.account, a.root_type
+        order by a.root_type desc, gle.account
+    """, (company_name,), as_dict=True)
+    
+    total_income = 0.0
+    total_expense = 0.0
+    
+    print("\n--- PENDAPATAN (INCOME) ---")
+    for gle in gl_entries:
+        if gle.root_type == "Income":
+            net = flt(gle.total_credit) - flt(gle.total_debit)
+            total_income += net
+            print(f"  {gle.account:<40} : Rp {net:>14,.2f}")
+            
+    print(f"TOTAL PENDAPATAN PENJUALAN                : Rp {total_income:>14,.2f}")
+
+    print("\n--- BEBAN & HARGA POKOK PENJUALAN (EXPENSE & COGS) ---")
+    cogs_amount = 0.0
+    for gle in gl_entries:
+        if gle.root_type == "Expense":
+            net = flt(gle.total_debit) - flt(gle.total_credit)
+            total_expense += net
+            print(f"  {gle.account:<40} : Rp {net:>14,.2f}")
+            if "Cost of Goods Sold" in gle.account:
+                cogs_amount = net
+                
+    gross_profit = total_income - cogs_amount
+    net_profit = total_income - total_expense
+    gross_margin_pct = (gross_profit / total_income * 100) if total_income else 0
+    
+    print("-" * 65)
+    print(f"TOTAL BEBAN / HPP OPERASIONAL             : Rp {total_expense:>14,.2f}")
+    print(f"LABA KOTOR PENJUALAN (GROSS PROFIT)       : Rp {gross_profit:>14,.2f}")
+    print(f"GROSS PROFIT MARGIN                       : {gross_margin_pct:.2f}%")
+    print(f"LABA BERSIH OPERASIONAL (NET PROFIT)      : Rp {net_profit:>14,.2f}")
+
+    # 4. LAPORAN SALDO KAS & BANK
+    print("\n" + "="*50)
+    print("4. POSISI SALDO KAS & BANK (CASH & BANK POSITION)")
+    print("="*50)
+    bank_gl = frappe.db.sql("""
+        select sum(debit - credit) as balance
+        from `tabGL Entry`
+        where account = 'Bank BCA - RFM' and is_cancelled = 0
+    """, as_dict=True)
+    bank_balance = flt(bank_gl[0].balance) if bank_gl else 0.0
+    print(f"Saldo Rekening Bank BCA - RFM             : Rp {bank_balance:>14,.2f} (Lunas)")
+
+    print("\n======================================================================")
+    print("=== TAHAP 6 SELESAI DENGAN SUKSES! SELURUH SIKLUS TERSELESAIKAN ===")
+    print("======================================================================")
+
+if __name__ == "__main__":
+    run()
+
+import frappe
+
+def main():
+    frappe.init(site="frontend", sites_path="/home/frappe/frappe-bench/sites")
+    frappe.connect()
+    print("SUCCESS: Connected to site", frappe.local.site)
+
+if __name__ == "__main__":
+    main()
+
+import frappe
+from erpnext.manufacturing.doctype.work_order.work_order import make_stock_entry
+from frappe.utils import nowdate, nowtime, flt
+
+def run():
+    print("=== TEST MANUFACTURE SUBMISSION ===")
+    wo_name = "MFG-WO-2026-00001"
+    wo = frappe.get_doc("Work Order", wo_name)
+    print("Work Order:", wo.name, "Status:", wo.status)
+    
+    # Try creating manufacture stock entry
+    se_dict = make_stock_entry(wo.name, "Manufacture", qty=10.0)
+    se = frappe.get_doc(se_dict)
+    se.posting_date = nowdate()
+    se.posting_time = nowtime()
+    
+    print("SE Type:", se.stock_entry_type, "Purpose:", se.purpose)
+    print("Total incoming items:", len(se.items))
+    for it in se.items:
+        print(f"  - Item: {it.item_code}, s_wh: {it.s_warehouse}, t_wh: {it.t_warehouse}, qty: {it.qty}, basic_rate: {it.basic_rate}")
+        
+    se.insert(ignore_permissions=True)
+    se.submit()
+    frappe.db.commit()
+    print(f"Stock Entry Manufacture BERHASIL DISUBMIT: {se.name}")
+    
+    wo.reload()
+    print(f"Status Work Order {wo.name}: {wo.status} | Produced Qty: {wo.produced_qty}")
+    
+    fg_wh = "Gudang Barang Jadi - RF - RFM"
+    item_code = "PROD-MEJA-01"
+    fg_qty = frappe.db.get_value("Bin", {"item_code": item_code, "warehouse": fg_wh}, "actual_qty")
+    fg_val = frappe.db.get_value("Bin", {"item_code": item_code, "warehouse": fg_wh}, "valuation_rate")
+    print(f"\n--- Verifikasi Stok Barang Jadi di {fg_wh} ---")
+    print(f"Item: {item_code} | Stok Tersedia: {fg_qty} Nos | Valuation Rate: Rp {flt(fg_val):,.2f}")
+
+import frappe
+
+def run():
+    company = "PT Terang Maju Manufaktur"
+    abbr = "TMM"
+    parent = f"Stock Assets - {abbr}"
+    
+    # 1. Buat akun-akun persediaan spesifik sesuai soal jika belum ada
+    acc_map = {
+        "1141 - Persediaan Bahan Baku": "Gudang Bahan Baku - TMM",
+        "1143 - Persediaan Barang Dalam Proses (WIP)": "Gudang WIP - TMM",
+        "1144 - Persediaan Barang Jadi": "Gudang Barang Jadi - TMM"
+    }
+    
+    for acc_name, wh_name in acc_map.items():
+        full_acc = f"{acc_name} - {abbr}"
+        if not frappe.db.exists("Account", full_acc):
+            frappe.get_doc({
+                "doctype": "Account",
+                "account_name": acc_name,
+                "company": company,
+                "parent_account": parent,
+                "account_type": "Stock",
+                "root_type": "Asset",
+                "is_group": 0
+            }).insert(ignore_permissions=True)
+            print(f"Created account: {full_acc}")
+        else:
+            print(f"Account exists: {full_acc}")
+            
+        # Update warehouse account
+        try:
+            wh = frappe.get_doc("Warehouse", wh_name)
+            if not wh.account:
+                wh.account = full_acc
+                wh.save(ignore_permissions=True)
+                print(f"Linked {wh_name} -> {full_acc}")
+        except Exception as e:
+            print(f"Could not link {wh_name} to {full_acc}: {e}")
+            
+    frappe.db.commit()
+
+import frappe
+from frappe.utils import nowdate, nowtime, add_to_date, now_datetime
+
+def run():
+    print("=== TEST PRODUCTION WORKFLOW INSPECTION ===")
+    company_name = "PT Rio Ferdinanda Manufaktur"
+    
+    # Check customer
+    cust = frappe.db.get_value("Customer", {"customer_name": "Toko Furnitur Sejahtera Abadi"}, "name")
+    print("Customer:", cust)
+    
+    # Check item
+    item = frappe.get_doc("Item", "PROD-MEJA-01")
+    print("Item:", item.name, "Default BOM:", item.default_bom)
+    
+    # Check BOM
+    bom = frappe.get_doc("BOM", "BOM-PROD-MEJA-01-001")
+    print("BOM:", bom.name, "with_operations:", bom.with_operations)
+
+import frappe
+
+def run():
+    wo = frappe.get_doc("Work Order", "MFG-WO-2026-00001")
+    print("Work Order:", wo.name, "Status:", wo.status)
+    print("Operations:", len(wo.operations))
+    for op in wo.operations:
+        print(f"  - op: {op.operation}, ws: {op.workstation}, time: {op.time_in_mins}")
+        
+    jcs = frappe.get_all("Job Card", filters={"work_order": wo.name}, fields=["name", "operation"])
+    print("Job Cards before:", jcs)
+    
+    # Try calling create_job_card
+    if not jcs:
+        wo.create_job_card()
+        frappe.db.commit()
+        jcs = frappe.get_all("Job Card", filters={"work_order": wo.name}, fields=["name", "operation"])
+        print("Job Cards after create_job_card():", jcs)
+
+item_group_name,parent_item_group,is_group
+Bahan Baku,All Item Groups,0
+Bahan Penolong,All Item Groups,0
+Barang Dalam Proses,All Item Groups,0
+Produk Jadi,All Item Groups,0
+
+warehouse_name,parent_warehouse,is_group,description
+Gudang Bahan Baku - RF,All Warehouses,0,Tempat penyimpanan material mentah seperti kayu dan besi
+Gudang WIP Produksi - RF,All Warehouses,0,Tempat transit barang dalam proses perakitan
+Gudang Barang Jadi - RF,All Warehouses,0,Tempat penyimpanan produk jadi siap jual dan kirim
+Gudang Scrap Rusak - RF,All Warehouses,0,Penyimpanan sisa potongan atau barang reject
+
+item_code,item_name,item_group,stock_uom,is_stock_item,include_item_in_manufacturing,valuation_rate,standard_rate,description
+RAW-KAYU-01,Papan Kayu Solid Pinus 120x60x2cm,Bahan Baku,Nos,1,1,85000,95000,Papan kayu pinus olahan untuk daun meja belajar
+RAW-PIPA-01,Pipa Besi Hollow 4x4 Tebal 1.6mm (Batang 6m),Bahan Baku,Nos,1,1,110000,125000,Bahan dasar rangka meja dan kaki kursi
+RAW-BAUT-01,Baut & Mur Hex Galvanis M6x30,Bahan Penolong,Nos,1,1,1000,1500,Baut perakit rangka besi dan kayu
+RAW-CAT-01,Cat Anti Karat Black Doff (Kaleng 1L),Bahan Penolong,Nos,1,1,45000,50000,Cat pelapis rangka besi anti korosi
+RAW-KAKI-01,Karet Pelindung Alas Kaki 4x4cm,Bahan Penolong,Nos,1,1,2500,3500,Karet penutup ujung pipa besi peredam lantai
+RAW-AMPLAS-01,Kertas Amplas Kayu No 240,Bahan Penolong,Nos,1,1,4000,5000,Kertas amplas untuk finishing kayu
+PROD-MEJA-01,Meja Belajar Minimalis RF-100,Produk Jadi,Nos,1,0,245000,475000,Meja belajar minimalis kayu solid dengan rangka besi hollow
+PROD-RAK-01,Rak Buku Sudut Industrial RF-200,Produk Jadi,Nos,1,0,180000,350000,Rak buku susun 3 bergaya industrial kombinasi kayu dan besi
+WIP-RANGKA-01,Sub-Assembly Rangka Besi Meja RF-100,Barang Dalam Proses,Nos,1,1,130000,150000,Rangka meja yang sudah dipotong dan dilas sebelum dicat
+
+supplier_name,supplier_group,supplier_type,country,tax_id,email,phone
+PT Kayu Rimba Perkasa,Raw Material,Company,Indonesia,01.234.567.8-011.000,sales@kayurimba.co.id,021-5551234
+CV Logam Baja Nusantara,Raw Material,Company,Indonesia,02.345.678.9-022.000,order@bajanusantara.id,021-8889900
+Toko Baut Citra Fastener,Hardware,Individual,Indonesia,03.456.789.0-033.000,citrabaut@gmail.com,081234567890
+UD Cahaya Cat Finishing,Hardware,Individual,Indonesia,04.567.890.1-044.000,cahayacat@yahoo.com,081398765432
+
+customer_name,customer_group,customer_type,territory,email,phone
+Toko Furnitur Sejahtera Abadi,Commercial,Company,Indonesia,pembelian@sejahteraabadi.com,021-7788990
+CV Karya Mandiri Edukasi,Commercial,Company,Indonesia,pengadaan@karyamandiri.co.id,022-4455667
+Bpk. Budi Santoso (Home Office),Individual,Individual,Indonesia,budi.santoso@gmail.com,08122334455
+Ibu Rina Wijaya (Interior Studio),Individual,Individual,Indonesia,rina.interior@gmail.com,08177889900
+
+doctype,name,workstation_name,operation_name,hour_rate,description
+Workstation,WS-POTONG,Stasiun Kerja Pemotongan Kayu & Besi,,60000,Area mesin potong gerinda duduk dan table saw
+Workstation,WS-LAS,Stasiun Kerja Pengelasan & Rangka,,65000,Area pengelasan rangka besi dan perataan sudut
+Workstation,WS-CAT,Stasiun Kerja Finishing & Pengecatan,,55000,Bilik semprot spray gun cat anti karat dan oven pengering
+Workstation,WS-RAKIT,Stasiun Kerja Perakitan & Quality Control,,50000,Meja perakitan akhir kayu dan kaki besi serta pengecekan QC
+Operation,OP-CUTTING,,Pemotongan Bahan Baku (Cutting),,Proses memotong papan kayu dan memotong pipa besi sesuai ukuran desain
+Operation,OP-WELDING,,Pengelasan Rangka (Welding),,Proses menyambung potongan pipa besi menjadi rangka kokoh
+Operation,OP-PAINTING,,Pengecatan dan Finishing (Coating),,Proses pelapisan anti karat dan semprot cat hitam doff
+Operation,OP-ASSEMBLY,,Perakitan Akhir & QC (Assembly),,Pemasangan daun meja kayu ke rangka besi dengan baut dan uji stabilitas
+
+bom_name,parent_item,item_type,component_item_code,component_item_name,qty,uom,rate_estimate,operating_cost_estimate,operation,workstation,time_in_mins
+BOM-PROD-MEJA-01,PROD-MEJA-01,Item,RAW-KAYU-01,Papan Kayu Solid Pinus 120x60x2cm,1,Nos,85000,0,,,
+BOM-PROD-MEJA-01,PROD-MEJA-01,Item,RAW-PIPA-01,Pipa Besi Hollow 4x4 (Batang 6m),0.5,Nos,110000,0,,,
+BOM-PROD-MEJA-01,PROD-MEJA-01,Item,RAW-BAUT-01,Baut & Mur Hex Galvanis M6x30,8,Nos,1000,0,,,
+BOM-PROD-MEJA-01,PROD-MEJA-01,Item,RAW-CAT-01,Cat Anti Karat Black Doff (Kaleng 1L),0.25,Nos,45000,0,,,
+BOM-PROD-MEJA-01,PROD-MEJA-01,Item,RAW-KAKI-01,Karet Pelindung Alas Kaki 4x4cm,4,Nos,2500,0,,,
+BOM-PROD-MEJA-01,PROD-MEJA-01,Item,RAW-AMPLAS-01,Kertas Amplas Kayu No 240,1,Nos,4000,0,,,
+BOM-PROD-MEJA-01,PROD-MEJA-01,Operation,,,,,,15000,Pemotongan Bahan Baku (Cutting),Stasiun Kerja Pemotongan Kayu & Besi,15
+BOM-PROD-MEJA-01,PROD-MEJA-01,Operation,,,,,,21667,Pengelasan Rangka (Welding),Stasiun Kerja Pengelasan & Rangka,20
+BOM-PROD-MEJA-01,PROD-MEJA-01,Operation,,,,,,13750,Pengecatan dan Finishing (Coating),Stasiun Kerja Finishing & Pengecatan,15
+BOM-PROD-MEJA-01,PROD-MEJA-01,Operation,,,,,,16667,Perakitan Akhir & QC (Assembly),Stasiun Kerja Perakitan & Quality Control,20
+BOM-PROD-RAK-01,PROD-RAK-01,Item,RAW-KAYU-01,Papan Kayu Solid Pinus 120x60x2cm,0.75,Nos,85000,0,,,
+BOM-PROD-RAK-01,PROD-RAK-01,Item,RAW-PIPA-01,Pipa Besi Hollow 4x4 (Batang 6m),0.4,Nos,110000,0,,,
+BOM-PROD-RAK-01,PROD-RAK-01,Item,RAW-BAUT-01,Baut & Mur Hex Galvanis M6x30,12,Nos,1000,0,,,
+BOM-PROD-RAK-01,PROD-RAK-01,Item,RAW-CAT-01,Cat Anti Karat Black Doff (Kaleng 1L),0.2,Nos,45000,0,,,
+BOM-PROD-RAK-01,PROD-RAK-01,Item,RAW-KAKI-01,Karet Pelindung Alas Kaki 4x4cm,4,Nos,2500,0,,,
+BOM-PROD-RAK-01,PROD-RAK-01,Operation,,,,,,15000,Pemotongan Bahan Baku (Cutting),Stasiun Kerja Pemotongan Kayu & Besi,15
+BOM-PROD-RAK-01,PROD-RAK-01,Operation,,,,,,16250,Pengelasan Rangka (Welding),Stasiun Kerja Pengelasan & Rangka,15
+BOM-PROD-RAK-01,PROD-RAK-01,Operation,,,,,,11000,Pengecatan dan Finishing (Coating),Stasiun Kerja Finishing & Pengecatan,12
+BOM-PROD-RAK-01,PROD-RAK-01,Operation,,,,,,12500,Perakitan Akhir & QC (Assembly),Stasiun Kerja Perakitan & Quality Control,15
+
+item_code,item_name,t_warehouse,qty,basic_rate,amount
+RAW-KAYU-01,Papan Kayu Solid Pinus 120x60x2cm,Gudang Bahan Baku - RF,50,85000,4250000
+RAW-PIPA-01,Pipa Besi Hollow 4x4 Tebal 1.6mm (Batang 6m),Gudang Bahan Baku - RF,30,110000,3300000
+RAW-BAUT-01,Baut & Mur Hex Galvanis M6x30,Gudang Bahan Baku - RF,500,1000,500000
+RAW-CAT-01,Cat Anti Karat Black Doff (Kaleng 1L),Gudang Bahan Baku - RF,20,45000,900000
+RAW-KAKI-01,Karet Pelindung Alas Kaki 4x4cm,Gudang Bahan Baku - RF,200,2500,500000
+RAW-AMPLAS-01,Kertas Amplas Kayu No 240,Gudang Bahan Baku - RF,50,4000,200000
+
+no,tahap,dokumen_erpnext,pihak_terkait,deskripsi_transaksi,detail_item,qty,satuan,target_gudang,catatan_praktik
+1,Pengadaan,Purchase Order,PT Kayu Rimba Perkasa,Pemesanan bahan baku kayu pinus tambahan,RAW-KAYU-01,20,Nos,Gudang Bahan Baku - RF,Lakukan Submit PO lalu buat Purchase Receipt
+2,Penerimaan Barang,Purchase Receipt,PT Kayu Rimba Perkasa,Penerimaan fisik kayu dari supplier,RAW-KAYU-01,20,Nos,Gudang Bahan Baku - RF,Stok bahan baku otomatis bertambah
+3,Faktur Pembelian,Purchase Invoice,PT Kayu Rimba Perkasa,Pencatatan tagihan utang supplier,RAW-KAYU-01,20,Nos,-,Catat faktur dan selesaikan Payment Entry
+4,Pesanan Penjualan,Sales Order,Toko Furnitur Sejahtera Abadi,Pesanan 10 unit Meja Belajar Minimalis RF-100,PROD-MEJA-01,10,Nos,Gudang Barang Jadi - RF,Harga jual Rp 475.000 / unit. Status: To Produce
+5,Perencanaan Produksi,Production Plan,Internal Manufaktur,Menghasilkan Work Order dari Sales Order,PROD-MEJA-01,10,Nos,-,Pilih Get Sales Order lalu buat Work Order
+6,Perintah Kerja,Work Order,Internal Manufaktur,Perintah produksi 10 unit meja belajar,PROD-MEJA-01,10,Nos,Gudang WIP Produksi - RF,Pastikan BOM terpilih BOM-PROD-MEJA-01
+7,Transfer Material,Stock Entry (Material Transfer for Manufacture),Gudang Bahan Baku -> WIP,Transfer bahan baku yang dibutuhkan untuk 10 meja,Komponen BOM (Kayu 10, Pipa 5, Baut 80, Cat 2.5L, Kaki 40, Amplas 10),-,Nos,Gudang WIP Produksi - RF,Klik Start pada Work Order
+8,Eksekusi Stasiun,Job Cards,Operator Stasiun Kerja,Menjalankan 4 stasiun: Cutting -> Welding -> Painting -> Assembly,Operasi Manufaktur,10,Nos,Stasiun Kerja Terkait,Klik Start & Complete pada masing-masing Job Card
+9,Penyelesaian Produksi,Stock Entry (Manufacture),Gudang WIP -> Barang Jadi,Konfirmasi barang jadi selesai dirakit dan QC lolos,PROD-MEJA-01,10,Nos,Gudang Barang Jadi - RF,Klik Finish pada Work Order. HPP terhitung otomatis
+10,Pengiriman Barang,Delivery Note,Toko Furnitur Sejahtera Abadi,Pengiriman 10 unit meja ke pembeli,PROD-MEJA-01,10,Nos,Gudang Barang Jadi - RF,Stok barang jadi berkurang 10 unit
+11,Faktur Penjualan,Sales Invoice,Toko Furnitur Sejahtera Abadi,Penagihan piutang senilai Rp 4.750.000,PROD-MEJA-01,10,Nos,-,Status: Unpaid -> Lanjutkan ke Payment Entry
+12,Penerimaan Pembayaran,Payment Entry,Toko Furnitur Sejahtera Abadi,Pelunasan tagihan melalui Bank/Kas,PROD-MEJA-01,-,-,-,Uang masuk ke akun Bank/Kas perusahaan
+
+import frappe
+
+def run():
+    company = frappe.get_doc("Company", "PT Rio Ferdinanda Manufaktur")
+    print("expenses_included_in_valuation:", company.expenses_included_in_valuation)
+    print("stock_adjustment_account:", company.stock_adjustment_account)
+    print("default_inventory_account:", company.default_inventory_account)
+    
+    accs = frappe.get_all("Account", filters={"company": company.name}, fields=["name", "account_type", "root_type"])
+    for a in accs:
+        if any(term in a.name.lower() for term in ["valuation", "operating", "expense", "stock", "direct"]):
+            print(a)
+
+import frappe
+
+def run():
+    print("=== CHECK GL ENTRY FIELDS & STOCK ENTRY ACCOUNTS ===")
+    company = "PT Rio Ferdinanda Manufaktur"
+    
+    # Check default accounts in Company
+    comp_doc = frappe.get_doc("Company", company)
+    for f in comp_doc.meta.fields:
+        if "account" in f.fieldname:
+            print(f"{f.fieldname}: {comp_doc.get(f.fieldname)}")
+            
+    # Check warehouses account
+    whs = frappe.get_all("Warehouse", filters={"company": company}, fields=["name", "warehouse_name", "account"])
+    for w in whs:
+        print(f"Warehouse {w.name} -> account: {w.account}")
+
+import frappe
+
+def run():
+    print("=== CHECKING WORKSTATION, OPERATION, BOM FIELDS ===")
+    ws_meta = frappe.get_meta("Workstation")
+    print("Workstation fields:", [df.fieldname for df in ws_meta.fields if df.fieldname])
+    
+    op_meta = frappe.get_meta("Operation")
+    print("Operation fields:", [df.fieldname for df in op_meta.fields if df.fieldname])
+    
+    bom_meta = frappe.get_meta("BOM")
+    print("BOM fields:", [df.fieldname for df in bom_meta.fields if df.fieldname])
+    
+    bom_item_meta = frappe.get_meta("BOM Item")
+    print("BOM Item fields:", [df.fieldname for df in bom_item_meta.fields if df.fieldname])
+    
+    bom_op_meta = frappe.get_meta("BOM Operation")
+    print("BOM Operation fields:", [df.fieldname for df in bom_op_meta.fields if df.fieldname])
+
+import frappe
+
+def run():
+    company_name = "PT Rio Ferdinanda Manufaktur"
+    company = frappe.get_doc("Company", company_name)
+    print("Company:", company.name)
+    print("Default Stock Adjustment Account:", company.stock_adjustment_account)
+    print("Default Inventory Account:", company.default_inventory_account)
+    
+    whs = frappe.get_all("Warehouse", filters={"company": company_name}, fields=["name", "warehouse_name", "account"])
+    for w in whs:
+        print("Warehouse:", w)
+
+import frappe
+
+def run():
+    company = "PT Terang Maju Manufaktur"
+    accs = frappe.db.sql("""
+        select name, account_type, root_type 
+        from `tabAccount` 
+        where company = %s and root_type = 'Asset'
+        order by name
+    """, (company,), as_dict=True)
+    for a in accs:
+        if any(w in a.name.lower() for w in ["stock", "persediaan", "wip", "hand"]):
+            print(a)
+            
+    whs = frappe.get_all("Warehouse", filters={"company": company}, fields=["name", "warehouse_name", "account"])
+    for w in whs:
+        print(w)
